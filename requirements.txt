@@ -1,0 +1,5 @@
+google-generativeai
+python-docx
+python-dotenv
+pyspellchecker
+language-tool-python
