@@ -49,9 +49,11 @@ class DynamicChunkCalculator:
         Args:
             rate_limit_manager: Rate limit manager for API constraints
         """
+        print(f"[DEBUG] DynamicChunkCalculator.__init__: Initializing with rate limit manager")
         self.rate_limit_manager = rate_limit_manager
         self.max_tokens_per_request = self._get_max_tokens_per_request()
         self.requests_per_minute = self._get_requests_per_minute()
+        print(f"[DEBUG] DynamicChunkCalculator.__init__: Max tokens per request: {self.max_tokens_per_request}, RPM: {self.requests_per_minute}")
     
     def _get_max_tokens_per_request(self) -> int:
         """Get maximum tokens per request based on model."""
@@ -82,7 +84,9 @@ class DynamicChunkCalculator:
         Returns:
             DocumentMetrics with analysis results
         """
+        print(f"[DEBUG] DynamicChunkCalculator.analyze_document: Analyzing {len(paragraphs)} paragraphs")
         if not paragraphs:
+            print(f"[DEBUG] DynamicChunkCalculator.analyze_document: No paragraphs to analyze")
             return DocumentMetrics(0, 0, 0, 0, 0, 0, 0)
         
         # Basic metrics
@@ -102,7 +106,7 @@ class DynamicChunkCalculator:
         # Estimated processing time (rough estimate)
         estimated_processing_time = self._estimate_processing_time(paragraphs)
         
-        return DocumentMetrics(
+        metrics = DocumentMetrics(
             total_paragraphs=total_paragraphs,
             avg_paragraph_length=avg_paragraph_length,
             max_paragraph_length=max_paragraph_length,
@@ -111,6 +115,9 @@ class DynamicChunkCalculator:
             complexity_score=complexity_score,
             estimated_processing_time=estimated_processing_time
         )
+        
+        print(f"[DEBUG] DynamicChunkCalculator.analyze_document: Complexity score: {complexity_score:.3f}, Estimated time: {estimated_processing_time:.1f}s")
+        return metrics
     
     def _calculate_complexity_score(self, paragraphs: List[str]) -> float:
         """
@@ -205,6 +212,7 @@ class DynamicChunkCalculator:
                                    min_chunk_size: int = 1) -> Tuple[int, Dict]:
         """
         Calculate optimal chunk size based on document characteristics.
+        print(f"[DEBUG] DynamicChunkCalculator.calculate_optimal_chunk_size: User override: {user_chunk_size}, Range: {min_chunk_size}-{max_chunk_size}")
         
         Args:
             paragraphs: List of paragraph texts

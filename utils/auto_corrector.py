@@ -31,17 +31,24 @@ class AutoCorrector:
             language: Language code for checking (default: en-US)
             english_variation: Variation of English for spelling (american, british, australian, canadian)
         """
+        print(f"[DEBUG] AutoCorrector.__init__: Initializing with language={language}, variation={english_variation}")
         self.language = language
         self.english_variation = english_variation
         # Keep document_checker for backward compatibility
+        print(f"[DEBUG] AutoCorrector.__init__: Creating DocumentChecker...")
         self.document_checker = DocumentChecker(language=language, english_variation=english_variation)
         # Initialize Gemini-based corrector
         self.gemini_corrector = None
+        print(f"[DEBUG] AutoCorrector.__init__: Attempting to initialize Gemini corrector...")
         try:
             if AI_API_KEY:
+                print(f"[DEBUG] AutoCorrector.__init__: API key found, creating GeminiCorrector...")
                 self.gemini_corrector = GeminiCorrector(api_key=AI_API_KEY, model_name=AI_MODEL_NAME)
-                print(f"Initialized Gemini AI for text correction with model: {AI_MODEL_NAME}")
+                print(f"[DEBUG] AutoCorrector.__init__: Initialized Gemini AI for text correction with model: {AI_MODEL_NAME}")
+            else:
+                print(f"[DEBUG] AutoCorrector.__init__: No API key found, skipping Gemini corrector")
         except Exception as e:
+            print(f"[DEBUG] AutoCorrector.__init__: Error initializing Gemini corrector: {e}")
             print(f"Warning: Could not initialize Gemini corrector: {e}")
             print("Falling back to basic spell checker.")
     
@@ -90,8 +97,10 @@ class AutoCorrector:
         Returns:
             Tuple of (corrected_paragraphs, corrections_applied)
         """
+        print(f"[DEBUG] AutoCorrector.auto_correct_spelling: Processing {len(paragraphs)} paragraphs")
         # Get spelling errors
         spelling_errors = self.document_checker.check_spelling(paragraphs)
+        print(f"[DEBUG] AutoCorrector.auto_correct_spelling: Found {len(spelling_errors)} spelling errors")
         
         # Create corrections dictionary with the top suggestion for each error
         corrections = {}
@@ -160,6 +169,7 @@ class AutoCorrector:
         """
         Apply comprehensive correction to a document.
         Uses Gemini AI for correction if available, otherwise falls back to basic spell checker.
+        print(f"[DEBUG] AutoCorrector.correct_document: Processing {len(paragraphs)} paragraphs with AI={use_ai_correction}")
         
         Args:
             paragraphs: List of paragraph texts

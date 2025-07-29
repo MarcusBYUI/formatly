@@ -64,20 +64,31 @@ class GeminiCorrector:
         Returns:
             Tuple of (corrected_text, correction_details)
         """
+        print(f"[DEBUG] GeminiCorrector: Correcting text (length: {len(text)} chars)")
         prompt = self._create_correction_prompt(text)
+        print(f"[DEBUG] GeminiCorrector: Created correction prompt (length: {len(prompt)} chars)")
         
         def _make_request():
             """Internal function to make the actual API request."""
+            print(f"[DEBUG] GeminiCorrector: Making API request...")
             response = self.model.generate_content(prompt)
+            print(f"[DEBUG] GeminiCorrector: Received API response")
+            print(f"[DEBUG] GeminiCorrector: Raw API response: {response.text}")
+            print(f"[DEBUG] GeminiCorrector: Response length: {len(response.text)} chars")
             return self._parse_correction_response(response.text, text)
         
         try:
             # Use rate limit manager to handle the request with automatic retries
-            return self.rate_limit_manager.execute_with_rate_limit(_make_request)
+            print(f"[DEBUG] GeminiCorrector: Executing with rate limit manager...")
+            result = self.rate_limit_manager.execute_with_rate_limit(_make_request)
+            print(f"[DEBUG] GeminiCorrector: Successfully completed correction")
+            return result
         except DailyQuotaExceededException:
+            print(f"[DEBUG] GeminiCorrector: Daily quota exceeded")
             # Re-raise daily quota exceptions to stop processing immediately
             raise
         except Exception as e:
+            print(f"[DEBUG] GeminiCorrector: Error during correction: {e}")
             print(f"Error during Gemini correction: {e}")
             return text, {"error": str(e), "corrections": 0}
     
@@ -139,10 +150,14 @@ class GeminiCorrector:
             text = text.strip()
             
             # Parse JSON
+            print(f"[DEBUG] GeminiCorrector._parse_correction_response: Attempting to parse JSON")
             result = json.loads(text)
+            print(f"[DEBUG] GeminiCorrector._parse_correction_response: Successfully parsed JSON")
+            print(f"[DEBUG] GeminiCorrector._parse_correction_response: Parsed JSON keys: {list(result.keys())}")
             
             # Validate the response format
             if "corrected_text" not in result:
+                print(f"[DEBUG] GeminiCorrector._parse_correction_response: Missing 'corrected_text' key in response")
                 return original_text, {"error": "Invalid response format", "corrections": 0}
             
             # Return the corrected text and details
@@ -180,12 +195,14 @@ class GeminiCorrector:
             return paragraphs, {"total_corrections": 0, "corrections_by_type": {}, "details": []}
 
         # Calculate optimal chunk size
+        print(f"[DEBUG] GeminiCorrector: Calculating optimal chunk size...")
         optimal_chunk_size, chunk_analysis = self.chunk_calculator.calculate_optimal_chunk_size(
             paragraphs, 
             user_chunk_size=chunk_size,
             max_chunk_size=10,
             min_chunk_size=1
         )
+        print(f"[DEBUG] GeminiCorrector: Optimal chunk size calculated: {optimal_chunk_size}")
 
         print(f"Processing {total_paragraphs} paragraphs for spelling, punctuation, and capitalization...")
         print(f"Using {chunk_analysis['method']} chunk size: {optimal_chunk_size} paragraphs per API request")

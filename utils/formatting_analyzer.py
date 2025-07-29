@@ -20,6 +20,7 @@ class FormattingAnalyzer:
     def __init__(self, style_name: str = "apa"):
         """
         Initialize the formatting analyzer.
+        print(f"[DEBUG] FormattingAnalyzer.__init__: Initializing with style {style_name}")
         
         Args:
             style_name: Name of the style guide to use (default: "apa")
@@ -32,8 +33,9 @@ class FormattingAnalyzer:
         ]
     
     def analyze_document(self, doc_path: str) -> Dict:
-        """
+        """ 
         Perform comprehensive analysis of document formatting.
+        print(f"[DEBUG] FormattingAnalyzer.analyze_document: Analyzing document at {doc_path}")
         
         Args:
             doc_path: Path to the Word document file
@@ -43,7 +45,7 @@ class FormattingAnalyzer:
         """
         try:
             doc = Document(doc_path)
-            
+            print(f"[DEBUG] FormattingAnalyzer.analyze_document: Document loaded. Sections: {len(doc.sections)}, Paragraphs: {len(doc.paragraphs)}")
             # Compile all analysis results
             return {
                 "document_info": self._get_document_info(doc),

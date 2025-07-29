@@ -25,17 +25,26 @@ API_KEY = os.getenv("GEMINI_API_KEY")
 MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-2.0-flash-exp")
 def configure_gemini(api_key: str) -> genai.GenerativeModel:
     """Configure and return the Gemini model."""
+    print(f"[DEBUG] configure_gemini: Starting with API key length: {len(api_key) if api_key else 0}")
+    print(f"[DEBUG] configure_gemini: Model name: {MODEL_NAME}")
     genai.configure(api_key=api_key)
-    return genai.GenerativeModel(MODEL_NAME)
+    model = genai.GenerativeModel(MODEL_NAME)
+    print(f"[DEBUG] configure_gemini: Successfully created model instance")
+    return model
 
 def load_style_guide(style_name: str) -> dict:
     """Load the appropriate style guide based on the requested style name."""
+    print(f"[DEBUG] load_style_guide: Requested style: {style_name}")
     style_name = style_name.lower()
-    return STYLE_GUIDES.get(style_name, STYLE_GUIDES["apa"])
+    print(f"[DEBUG] load_style_guide: Normalized style name: {style_name}")
+    style_guide = STYLE_GUIDES.get(style_name, STYLE_GUIDES["apa"])
+    print(f"[DEBUG] load_style_guide: Found style guide: {'Yes' if style_name in STYLE_GUIDES else 'No, using APA fallback'}")
+    return style_guide
 
 def initialize_document_structure() -> dict:
     """Return a template for the document structure JSON."""
-    return {
+    print(f"[DEBUG] initialize_document_structure: Creating document structure template")
+    structure = {
         "title_page": {
             "title": "",
             "author": "",
@@ -101,11 +110,15 @@ def initialize_document_structure() -> dict:
             "author_bio": ""
         }
     }
+    print(f"[DEBUG] initialize_document_structure: Template created with {len(structure)} main sections")
+    return structure
 
 def create_detection_prompt(paragraphs: list) -> str:
     """Create the prompt for document structure detection."""
+    print(f"[DEBUG] create_detection_prompt: Creating prompt for {len(paragraphs)} paragraphs")
     json_structure = json.dumps(initialize_document_structure(), indent=4)
-    return f"""
+    print(f"[DEBUG] create_detection_prompt: JSON structure template size: {len(json_structure)} chars")
+    prompt = f"""
     You are an AI processor for academic documents. Your task is to classify and extract the content below into a structured JSON format that reflects all components requiring formatting.
 
     Return only valid JSON containing these keys without placeholders or sample text:
@@ -125,10 +138,26 @@ def create_detection_prompt(paragraphs: list) -> str:
 
     Return valid JSON only without explanation or markdown.
     """
-    print(prompt)
+    print(f"[DEBUG] create_detection_prompt: Prompt created, length: {len(prompt)} chars")
+    return prompt
 
 def parse_gemini_response(response_text: str) -> dict:
-    """Parse the response from Gemini and return the structured data."""
+    """
+    Parse and validate the response from Gemini in a single pass.
+    
+    Args:
+        response_text: Raw response text from Gemini API
+        
+    Returns:
+        dict: Validated and sanitized document structure
+        
+    Raises:
+        ValueError: If the response cannot be parsed as valid JSON
+    """
+    if not response_text or not isinstance(response_text, str):
+        raise ValueError("Empty or invalid response text")
+        
+    # Clean and prepare the response text
     text = response_text.strip()
     
     # Remove markdown code fences if present
@@ -136,86 +165,161 @@ def parse_gemini_response(response_text: str) -> dict:
         text = text[7:]
     elif text.startswith("```"):
         text = text[3:]
+    text = text.rstrip("`").strip()
     
-    if text.endswith("```"):
-        text = text[:-3]
-    
-    # Remove any leading/trailing whitespace
-    text = text.strip()
-    
-    # Validate that we have actual JSON content
-    if not text or text[0] not in ['{', '[']:
-        raise json.JSONDecodeError(f"Invalid JSON format: {text[:100]}...", text, 0)
+    if not text:
+        raise ValueError("Empty response after cleaning")
     
     try:
-        parsed_data = json.loads(text)
-        return validate_document_structure(parsed_data)
+        # Parse JSON in a single pass
+        data = json.loads(text)
+        print(f"{data}")
+        return validate_document_structure(data)
     except json.JSONDecodeError as e:
-        print(f"Warning: Failed to parse AI response as JSON: {e}")
-        print(f"Raw response: {response_text[:200]}...")
-        raise
+        error_msg = f"Failed to parse JSON response: {str(e)}"
+        print(f"[ERROR] {error_msg}")
+        # Try to find the start of the JSON object
+        json_start = text.find('{')
+        if json_start != -1:
+            text = text[json_start:]
+            try:
+                data = json.loads(text)
+                return validate_document_structure(data)
+            except json.JSONDecodeError:
+                pass  # Re-raise the original error if still failing
+        raise ValueError(error_msg) from e
 
 def validate_document_structure(data: dict) -> dict:
-    """Validate and sanitize the document structure returned by AI."""
+    """
+    Validate and sanitize the document structure with minimal processing.
+    
+    Args:
+        data: Raw parsed JSON data from Gemini
+        
+    Returns:
+        dict: Validated and sanitized document structure
+        
+    Raises:
+        ValueError: If the data structure is invalid
+    """
     if not isinstance(data, dict):
         raise ValueError("Document structure must be a dictionary")
     
-    # Ensure required keys exist with proper types
-    validated = {
-        "title_page": data.get("title_page", {}),
-        "front_matter": data.get("front_matter", {}),
-        "abstract": data.get("abstract", {}),
-        "headings": data.get("headings", {"heading_1": [], "heading_2": [], "heading_3": []}),
-        "body_content": data.get("body_content", {}),
-        "special_elements": data.get("special_elements", {}),
-        "citations_and_references": data.get("citations_and_references", {}),
-        "tables_and_figures": data.get("tables_and_figures", {}),
-        "appendices": data.get("appendices", {}),
-        "back_matter": data.get("back_matter", {}),
-        
-        # Legacy keys for backward compatibility
-        "block_quotes": data.get("block_quotes", []),
-        "in_text_citations": data.get("in_text_citations", []),
-        "tables": data.get("tables", []),
-        "figures": data.get("figures", []),
-        "footnotes": data.get("footnotes", []),
-        "References": data.get("References", []),
-        "references": data.get("references", [])  # Handle both cases
+    # Define the schema for the document structure
+    schema = {
+        "title_page": dict,
+        "front_matter": dict,
+        "abstract": dict,
+        "headings": dict,
+        "body_content": dict,
+        "special_elements": dict,
+        "citations_and_references": dict,
+        "tables_and_figures": dict,
+        "appendices": dict,
+        "back_matter": dict,
+        # Legacy fields
+        "block_quotes": list,
+        "in_text_citations": list,
+        "tables": list,
+        "figures": list,
+        "footnotes": list,
+        "References": list,
+        "references": list
     }
     
-    # Ensure lists are actually lists (legacy and new structure)
-    list_keys = ["block_quotes", "in_text_citations", "tables", "figures", "footnotes", "References", "references"]
-    for key in list_keys:
-        if not isinstance(validated[key], list):
-            validated[key] = []
+    # Initialize with defaults
+    validated = {}
     
-    # Ensure nested dictionaries are dictionaries
-    dict_keys = ["title_page", "front_matter", "abstract", "headings", "body_content", 
-                 "special_elements", "citations_and_references", "tables_and_figures", 
-                 "appendices", "back_matter"]
-    for key in dict_keys:
-        if not isinstance(validated[key], dict):
-            validated[key] = {}
+    # Validate and set each field
+    for key, expected_type in schema.items():
+        value = data.get(key)
+        
+        # Set default value if not present or wrong type
+        if value is None or not isinstance(value, expected_type):
+            validated[key] = [] if expected_type == list else {}
+        else:
+            validated[key] = value
+    
+    # Ensure headings has required sub-keys
+    if not all(k in validated["headings"] for k in ["heading_1", "heading_2", "heading_3"]):
+        validated["headings"] = {
+            "heading_1": [],
+            "heading_2": [],
+            "heading_3": []
+        }
     
     return validated
 
 def create_default_structure() -> dict:
     """Return a default document structure when parsing fails."""
     return {
-        "title": "", "author": "", "affiliation": "", "abstract": [],
+        "Title": "", "author": "", "affiliation": "", "abstract": [],
         "headings": {"heading_1": [], "heading_2": [], "heading_3": []},
         "block_quotes": [], "references": []
     }
 
 def create_style_mappings() -> dict:
-    """Return a dictionary of simple style mappings."""
+    """Return a comprehensive dictionary of style mappings for all document elements."""
     return {
+        # Title page
         "title": "Title",
         "author": "Author",
         "affiliation": "Affiliation",
-        "dedication": "Normal",
-        "appendices_title": "Appendices Title",
-        "appendix_title": "Appendix Title"
+        "institution": "Institution",
+        "course": "Course",
+        "instructor": "Instructor",
+        "due_date": "Date",
+        
+        # Front matter
+        "dedication": "Dedication",
+        "acknowledgments": "Acknowledgments",
+        "preface": "Preface",
+        "table_of_contents": "TOC Heading",
+        "list_of_figures": "List of Figures",
+        "list_of_tables": "List of Tables",
+        "list_of_abbreviations": "List of Abbreviations",
+        
+        # Main content
+        "abstract": "Abstract",
+        "keywords": "Keywords",
+        "heading_1": "Heading 1",
+        "heading_2": "Heading 2",
+        "heading_3": "Heading 3",
+        "heading_4": "Heading 4",
+        "heading_5": "Heading 5",
+        "paragraph": "Normal",
+        "block_quote": "Block Quote",
+        "figure": "Figure",
+        "table": "Table",
+        "footnote": "Footnote",
+        "endnote": "Endnote",
+
+        # Body content (ensure strict mapping for all AI structure keys)
+        "introduction": "Normal",
+        "methodology": "Normal",
+        "results": "Normal",
+        "discussion": "Normal",
+        "conclusion": "Normal",
+        "body_paragraphs": "Normal",
+
+        # Appendices and Figures
+        "appendix": "Appendix",
+        "appendix_heading": "Appendix Heading",
+        "figure": "Figure",
+        "figure_caption": "Figure Caption",
+        
+        # References
+        "references": "References",
+        "bibliography": "Bibliography",
+        
+        # Appendices
+        "appendix": "Appendix",
+        "appendix_heading": "Appendix Heading",
+        
+        # Back matter
+        "glossary": "Glossary",
+        "index": "Index",
+        "author_bio": "Author Bio"
     }
 
 def create_section_mappings() -> dict:
@@ -231,14 +335,17 @@ def create_section_mappings() -> dict:
 
 class AdvancedFormatter:
     def __init__(self, style_name, api_key: str = API_KEY, model_name: str = MODEL_NAME):
+        print(f"[DEBUG] Initializing AdvancedFormatter with style: {style_name}")
         self.style_name = style_name.lower()
         self.style_guide = load_style_guide(self.style_name)
         if not api_key:
             raise ValueError("API key for Gemini is required.")
         self.api_key = api_key
         self.model_name = model_name or "gemini-2.0-flash"  # Default fallback
+        print(f"[DEBUG] Using model: {self.model_name}")
         # Initialize rate limit manager
         self.rate_limit_manager = RateLimitManager(self.model_name)
+        print(f"[DEBUG] AdvancedFormatter initialized successfully")
 
     def _customize_builtin_styles(self, doc):
         """Customize built-in styles while preserving their outline levels."""
@@ -258,163 +365,466 @@ class AdvancedFormatter:
             try:
                 style = doc.styles[builtin_name]
                 style_def = self.style_guide['styles'].get(style_name, {})
-                
+                print(f"[DEBUG] Customizing style: {builtin_name} -> {style_name}")
                 # Preserve the original outline level
                 original_outline = style.paragraph_format.outline_level
                 
+                # Apply font styles to the built-in style
                 if 'font' in style_def:
                     p = doc.add_paragraph()
                     run = p.add_run()
                     self._apply_font_style(run.font, style_def['font'])
                     
+                    # Update the built-in style's font
                     font = style.font
                     for attr, value in style_def['font'].items():
                         if hasattr(font, attr):
                             setattr(font, attr, value)
                     
+                    # Remove the temporary paragraph
                     doc._body.remove(p._p)
                 
                 if 'paragraph' in style_def:
+                    # Apply paragraph styles to the built-in style
+                    # by creating a temporary paragraph, applying the style
+                    # to it, and then extracting the desired attributes
+                    # from the temporary paragraph's format
                     p = doc.add_paragraph()
                     self._apply_paragraph_style(p, style_def['paragraph'])
                     
+                    # Copy over the desired attributes from the temporary
+                    # paragraph's format to the built-in style's format
                     p_format = style.paragraph_format
                     for attr, value in style_def['paragraph'].items():
                         if hasattr(p_format, attr):
-                            setattr(p_format, attr, value)
+                            setattr(p_format, attr, getattr(p.paragraph_format, attr))
                     
                     # Restore the outline level after applying other formatting
                     style.paragraph_format.outline_level = original_outline
                     doc._body.remove(p._p)
                 
+                # Ensure the style is visible in the Styles pane
                 style.hidden = False
+                
+                # Auto-show the style in the Styles pane when it is used
                 style.unhide_when_used = True
+                
+                # Allow the style to be applied with the Quick Style button
                 style.quick_style = True
                 
             except (KeyError, AttributeError):
                 continue
 
     def format_document(self, input_path, output_path):
+        print(f"[DEBUG] Starting document formatting: {input_path} -> {output_path}")
         doc = Document(input_path)
+        print(f"[DEBUG] Document loaded, paragraph count: {len(doc.paragraphs)}")
 
+        print(f"[DEBUG] Customizing built-in styles...")
         self._customize_builtin_styles(doc)
+        print(f"[DEBUG] Applying margins...")
         self._apply_margins(doc)
+        print(f"[DEBUG] Adding page numbers...")
         self._add_page_numbers(doc)
 
         paragraphs_text = [p.text for p in doc.paragraphs]
+        print(f"[DEBUG] Extracting paragraphs: {len(paragraphs_text)} total")
+        print(f"[DEBUG] Detecting paragraph types using AI...")
         doc_structure = self._detect_paragraph_types(paragraphs_text)
+        print(f"[DEBUG] Document structure detected")
+        
         if not doc_structure.get("references"):
+            print(f"[DEBUG] No references found in structure, searching manually...")
             self._find_references_manually(doc, doc_structure)
+        else:
+            print(f"[DEBUG] References found in structure: {len(doc_structure.get('references', []))}")
 
+        print(f"[DEBUG] Formatting content in place...")
         self._format_content_in_place(doc, doc_structure)
+        print(f"[DEBUG] Inserting page breaks...")
         self._insert_page_breaks(doc)
         
+        print(f"[DEBUG] Saving formatted document...")
         doc.save(output_path)
+        print(f"[DEBUG] Document formatting completed successfully")
 
     def _detect_paragraph_types(self, paragraphs):
+        print(f"[DEBUG] Detecting paragraph types for {len(paragraphs)} paragraphs")
         try:
+            print(f"[DEBUG] Configuring Gemini model for paragraph detection...")
             model = configure_gemini(self.api_key)
+            print(f"[DEBUG] Creating detection prompt...")
             prompt = create_detection_prompt(paragraphs)
+            print(f"[DEBUG] Prompt created, length: {len(prompt)} chars")
             
             def _make_request():
                 """Internal function to make the actual API request."""
+                print(f"[DEBUG] Making API request to Gemini...")
                 response = model.generate_content(prompt)
+                print(f"[DEBUG] Received response from Gemini")
+                print(f"[DEBUG] Raw Gemini API response: {response.text}")
+                print(f"[DEBUG] Response length: {len(response.text)} chars")
+                print(f"[DEBUG] Starting response parsing...")
                 return parse_gemini_response(response.text)
             
             # Use rate limit manager to handle the request with automatic retries
-            return self.rate_limit_manager.execute_with_rate_limit(_make_request)
-        except json.JSONDecodeError:
+            print(f"[DEBUG] Executing request with rate limit manager...")
+            result = self.rate_limit_manager.execute_with_rate_limit(_make_request)
+            print(f"[DEBUG] Successfully detected paragraph types")
+            return result
+        except json.JSONDecodeError as e:
+            print(f"[DEBUG] JSON decode error in paragraph detection: {e}")
+            print(f"[DEBUG] Falling back to default structure")
             return create_default_structure()
-        except Exception:
+        except Exception as e:
+            print(f"[DEBUG] Exception in paragraph detection: {e}")
+            print(f"[DEBUG] Falling back to default structure")
             return create_default_structure()
 
     def _format_content_in_place(self, doc, doc_structure):
+        # Create a style map to look up which paragraph text corresponds to which style
         style_map = {}
         simple_style_map = create_style_mappings()
         section_map = create_section_mappings()
 
-        # Apply simple style mappings
-        for key, style in simple_style_map.items():
-            text = doc_structure.get(key)
-            if text and isinstance(text, str):
-                style_map[text.strip()] = style
+        # Ensure all required styles exist in the DOCX
+        from docx.enum.style import WD_STYLE_TYPE
+        needed_styles = set(simple_style_map.values()) | {"References", "Keywords", "Block Quote", "Table Title", "Figure Caption", "Appendix Heading", "Normal"}
+        for style_name in needed_styles:
+            if style_name not in doc.styles:
+                doc.styles.add_style(style_name, WD_STYLE_TYPE.PARAGRAPH)
+
+        # Handle title page elements
+        title_page = doc_structure.get("title_page", {})
+        for key, value in title_page.items():
+            if key in simple_style_map and value and isinstance(value, str):
+                # Map paragraph text to the corresponding style
+                style_map[value.strip()] = simple_style_map[key]
+
+        # Handle front matter elements
+        front_matter = doc_structure.get("front_matter", {})
+        for key, value in front_matter.items():
+            if key in simple_style_map and value and isinstance(value, str):
+                # Map paragraph text to the corresponding style
+                style_map[value.strip()] = simple_style_map[key]
+
+        # Handle abstract
+        abstract = doc_structure.get("abstract", {})
+        if abstract.get("text"):
+            # Map the abstract text to the Abstract style
+            style_map[abstract["text"].strip()] = "Abstract"
+        if abstract.get("keywords"):
+            for keyword in abstract["keywords"]:
+                if isinstance(keyword, str):
+                    # Map each keyword to the Keywords style
+                    style_map[keyword.strip()] = "Keywords"
+
+        # Handle headings
+        headings = doc_structure.get("headings", {})
+        for level, heading_list in headings.items():
+            if level in simple_style_map:
+                for heading_obj in heading_list:
+                    if isinstance(heading_obj, dict) and heading_obj.get("text"):
+                        # Map the heading text to the corresponding style
+                        style_map[heading_obj["text"].strip()] = simple_style_map[level]
+                        # Map content paragraphs under this heading to 'Normal' style
+                        if heading_obj.get("content") and isinstance(heading_obj["content"], list):
+                            for para in heading_obj["content"]:
+                                if isinstance(para, str):
+                                    style_map[para.strip()] = "Normal"
+                    elif isinstance(heading_obj, str):
+                        # Map the heading text to the corresponding style
+                        style_map[heading_obj.strip()] = simple_style_map[level]
+
+        # Handle body content
+        body_content = doc_structure.get("body_content", {})
+        for section, content_list in body_content.items():
+            if section in simple_style_map and isinstance(content_list, list):
+                for content in content_list:
+                    if isinstance(content, str):
+                        # Map the body content text to the corresponding style
+                        style_map[content.strip()] = simple_style_map[section]
+
+        # Handle special elements
+        special_elements = doc_structure.get("special_elements", {})
+        block_quotes = special_elements.get("block_quotes", [])
+        for quote_obj in block_quotes:
+            if isinstance(quote_obj, dict) and quote_obj.get("quote"):
+                # Map the block quote text to the Block Quote style
+                style_map[quote_obj["quote"].strip()] = "Block Quote"
+
+        # Handle citations and references
+        citations_refs = doc_structure.get("citations_and_references", {})
+        references = citations_refs.get("references", [])
+        for ref_obj in references:
+            if isinstance(ref_obj, dict) and ref_obj.get("entry"):
+                # Map the reference text to the References style
+                style_map[ref_obj["entry"].strip()] = "References"
+            elif isinstance(ref_obj, str):
+                # Map the reference text to the References style
+                style_map[ref_obj.strip()] = "References"
+
+        footnotes = citations_refs.get("footnotes", [])
+        for footnote_obj in footnotes:
+            if isinstance(footnote_obj, dict) and footnote_obj.get("text"):
+                # Map the footnote text to the Footnote style
+                style_map[footnote_obj["text"].strip()] = "Footnote"
+
+        # Handle tables and figures
+        tables_figures = doc_structure.get("tables_and_figures", {})
+        
+        tables = tables_figures.get("tables", [])
+        for table_obj in tables:
+            if isinstance(table_obj, dict):
+                if table_obj.get("title"):
+                    # Map the table title to the Table Title style
+                    style_map[table_obj["title"].strip()] = "Table Title"
+                if table_obj.get("number"):
+                    # Map the table number to the Table style
+                    style_map[table_obj["number"].strip()] = "Table"
+
+        figures = tables_figures.get("figures", [])
+        for figure_obj in figures:
+            if isinstance(figure_obj, dict):
+                if figure_obj.get("caption"):
+                    # Map the figure caption to the Figure Caption style
+                    style_map[figure_obj["caption"].strip()] = "Figure Caption"
+                if figure_obj.get("number"):
+                    # Map the figure number to the Figure style
+                    style_map[figure_obj["number"].strip()] = "Figure"
+                # Map any figure label or title
+                if figure_obj.get("label"):
+                    style_map[figure_obj["label"].strip()] = "Figure"
+                if figure_obj.get("title"):
+                    style_map[figure_obj["title"].strip()] = "Figure Caption"
+
+        # Handle appendices
+        appendices = doc_structure.get("appendices", {})
+        appendix_sections = appendices.get("appendix_sections", [])
+        for appendix_obj in appendix_sections:
+            if isinstance(appendix_obj, dict):
+                if appendix_obj.get("title"):
+                    # Map the appendix title to the Appendix Heading style
+                    style_map[appendix_obj["title"].strip()] = "Appendix Heading"
+                if appendix_obj.get("label"):
+                    # Map the appendix label to the Appendix style
+                    style_map[appendix_obj["label"].strip()] = "Appendix"
+                # Map any appendix content as Normal
+                if appendix_obj.get("content") and isinstance(appendix_obj["content"], list):
+                    for para in appendix_obj["content"]:
+                        if isinstance(para, str):
+                            style_map[para.strip()] = "Normal"
+
+        # Handle back matter
+        back_matter = doc_structure.get("back_matter", {})
+        for key, value in back_matter.items():
+            if key in simple_style_map:
+                if isinstance(value, str) and value:
+                    # Map the back matter text to the corresponding style
+                    style_map[value.strip()] = simple_style_map[key]
+                elif isinstance(value, list):
+                    for item in value:
+                        if isinstance(item, str):
+                            # Map the back matter text to the corresponding style
+                            style_map[item.strip()] = simple_style_map[key]
 
         # Apply section title mappings
+        # Iterate through the section_map dictionary
         for key, title_text in section_map.items():
+            # Check if the key exists in the doc_structure dictionary
             if doc_structure.get(key):
+                # Map the section title to the Heading 1 style
+                # in the style_map dictionary
                 style_map[title_text] = "Heading 1"
 
-        # Apply special section styles
-        for key, style in [("abstract", "Normal"), ("block_quotes", "Block Quote"), ("references", "References")]:
-            for text in doc_structure.get(key, []):
-                if isinstance(text, str):
-                    style_map[text.strip()] = style
+        # --- Preprocessing: split paragraphs with multiple mapped elements ---
+        # Build a set of all mapped element texts (for fast lookup)
+        mapped_texts = set(style_map.keys())
+        # Sort mapped_texts by length descending to match longest first
+        mapped_texts_sorted = sorted(mapped_texts, key=len, reverse=True)
 
-        # Apply heading styles
-        for level, heading_list in doc_structure.get("headings", {}).items():
-            style_name = level.replace('_', ' ').title()
-            for heading_obj in heading_list:
-                if isinstance(heading_obj, dict):
-                    heading_text = heading_obj.get('text', '').strip()
-                    if heading_text:
-                        style_map[heading_text] = style_name
-                    for content_para in heading_obj.get('content', []):
-                        if isinstance(content_para, str):
-                            style_map[content_para.strip()] = "Normal"
+        # Gather all reference entries for robust splitting
+        reference_entries = set()
+        citations_refs = doc_structure.get("citations_and_references", {})
+        references = citations_refs.get("references", [])
+        for ref_obj in references:
+            if isinstance(ref_obj, dict) and ref_obj.get("entry"):
+                reference_entries.add(ref_obj["entry"].strip())
+            elif isinstance(ref_obj, str):
+                reference_entries.add(ref_obj.strip())
 
-        # Apply figure styles
-        for fig in doc_structure.get("figures", []):
-            if isinstance(fig, dict):
-                number = fig.get("number", "").strip()
-                caption = fig.get("caption", "").strip()
-                if number:
-                    style_map[number] = "Figure"
-                if caption:
-                    style_map[caption] = "Figure Caption"
+        # Work on a copy since we'll be modifying the paragraphs list
+        i = 0
+        while i < len(doc.paragraphs):
+            p = doc.paragraphs[i]
+            text = p.text.strip()
+            if not text:
+                i += 1
+                continue
+            # --- Special: Split 'References' + reference entry in one paragraph ---
+            if text.startswith("References"):
+                for ref in reference_entries:
+                    idx = text.find(ref)
+                    if idx > 0:
+                        before = text[:idx].strip()
+                        after = text[idx:].strip()
+                        p.text = before
+                        new_p = doc.add_paragraph(after)
+                        p._element.addnext(new_p._element)
+                        # Restart processing for this index (in case after also needs splitting)
+                        break
+            matches = [mt for mt in mapped_texts_sorted if mt and text.startswith(mt)]
+            if len(matches) > 1:
+                # Paragraph starts with more than one mapped element, ambiguous, skip for now
+                i += 1
+                continue
+            elif len(matches) == 1 and text != matches[0]:
+                # Paragraph starts with a mapped element but contains more text (merged)
+                matched = matches[0]
+                rest = text[len(matched):].lstrip('\n').lstrip()
+                # Replace with two paragraphs: mapped element and rest
+                p.text = matched
+                if rest:
+                    new_p = doc.add_paragraph(rest)
+                    # Insert new_p after p
+                    p._element.addnext(new_p._element)
+                # Restart processing for this index (in case rest also needs splitting)
+                continue
+            i += 1
 
-        # Apply table styles
-        for tbl in doc_structure.get("tables", []):
-            if isinstance(tbl, dict):
-                number = tbl.get("number", "").strip()
-                title = tbl.get("title", "").strip()
-                notes = tbl.get("notes", [])
+        # --- Diagnostic pass: write mapping status for each paragraph to file ---
+        with open('paragraph_mapping_diagnostics.txt', 'w', encoding='utf-8') as diag_file:
+            diag_file.write("[DEBUG] Paragraph mapping diagnostics:\n")
+            for p in doc.paragraphs:
+                text = p.text.strip()
+                if not text:
+                    continue
+                preview = text[:100] + ("..." if len(text) > 100 else "")
+                if text in style_map:
+                    diag_file.write(f"[MATCH] Exact: '{preview}' → '{style_map[text]}'\n")
+                else:
+                    # Check for substring match (both directions) for body styles
+                    body_styles = {v for k, v in simple_style_map.items() if k in ["introduction", "methodology", "results", "discussion", "conclusion", "body_paragraphs"]}
+                    found = False
+                    for key, style in style_map.items():
+                        if style in body_styles and (text in key or key in text):
+                            diag_file.write(f"[MATCH] Substring: '{preview}' ≈ '{key[:100]}' → '{style}'\n")
+                            found = True
+                            break
+                    if not found:
+                        # Try robust reference matching
+                        reference_style = simple_style_map.get("references", "References")
+                        def normalize(s):
+                            return ' '.join(s.lower().split())
+                        norm_text = normalize(text)
+                        for key, style in style_map.items():
+                            if style == reference_style and normalize(key) == norm_text:
+                                diag_file.write(f"[MATCH] Reference (normalized): '{preview}' → '{style}'\n")
+                                found = True
+                                break
+                        if not found:
+                            diag_file.write(f"[UNMATCHED] '{preview}'\n")
 
-                if number:
-                    style_map[number] = "Table"
-                if title:
-                    style_map[title] = "Table Title"
-                for note in notes:
-                    if isinstance(note, str):
-                        style_map[note.strip()] = "Table Note"
-
-        # First pass: Apply heading styles to establish document structure
+        # First pass: Apply all styles from the style map with exact matching
         for p in doc.paragraphs:
             text = p.text.strip()
             if not text:
                 continue
 
-            if text.lower() == "abstract" and text not in style_map:
-                p.style = doc.styles["Heading 1"]
-            elif text.lower() == "references" and text not in style_map:
-                p.style = doc.styles["Heading 1"]
-            elif text in style_map and style_map[text].startswith("Heading"):
-                p.style = doc.styles[style_map[text]]
-
-        # Second pass: Apply all other formatting
-        for p in doc.paragraphs:
-            text = p.text.strip()
-            if not text:
-                continue
-
-            if text.lower() == "abstract" and text not in style_map:
-                style_name = "Heading 1"
-            elif text.lower() == "references" and text not in style_map:
-                style_name = "Heading 1"
-            else:
-                style_name = style_map.get(text, "Normal")
+            # Get style name from map with exact matching
+            style_name = style_map.get(text)
             
-            self._apply_advanced_style(p, style_name)
+            if style_name is not None:
+                # Apply the style if it exists in the document
+                if style_name in doc.styles:
+                    p.style = style_name
+                    continue
+                else:
+                    print(f"[DEBUG] Style '{style_name}' is not defined in the document. Available styles: {list(doc.styles)}")
+                    raise ValueError(f"Style '{style_name}' is not defined in the document")
+            
+            # Special handling for section titles that must be exact matches
+            if text in ["Abstract", "References"]:
+                if text in doc.styles:
+                    p.style = text
+                else:
+                    # Fall back to Heading 1 for standard section titles if exact style not found
+                    p.style = "Heading 1"
 
+            # If still no style, try substring/fuzzy match for body content
+            else:
+                preview = text[:100] + ("..." if len(text) > 100 else "")
+                from difflib import get_close_matches
+                close_matches = get_close_matches(text, list(style_map.keys()), n=3, cutoff=0.3)
+                # Only allow substring match for known body content styles
+                body_styles = {v for k, v in simple_style_map.items() if k in ["introduction", "methodology", "results", "discussion", "conclusion", "body_paragraphs"]}
+                found = False
+                for key, style in style_map.items():
+                    if style in body_styles and (text in key or key in text):
+                        if style in doc.styles:
+                            p.style = style
+                            found = True
+                            print(f"[DEBUG] Applied body style '{style}' to paragraph (substring match): '{preview}'")
+                            break
+                if found:
+                    continue
+                # Robust reference mapping (normalize whitespace/case)
+                reference_style = simple_style_map.get("references", "References")
+                def normalize(s):
+                    return ' '.join(s.lower().split())
+                norm_text = normalize(text)
+                for key, style in style_map.items():
+                    if style == reference_style and normalize(key) == norm_text:
+                        if style in doc.styles:
+                            p.style = style
+                            found = True
+                            print(f"[DEBUG] Applied reference style '{style}' to paragraph (normalized match): '{preview}'")
+                            break
+                if found:
+                    continue
+                # Fallback: assign 'Normal' style to unmatched body/reference paragraphs, warn user
+                heading_styles = {v for k, v in simple_style_map.items() if k.startswith("heading_") or k in ["title", "abstract", "references"]}
+                # Fallback for figure captions/labels
+                if text.lower().startswith("figure") and "Figure" in doc.styles:
+                    p.style = "Figure"
+                    print(f"[WARNING] Unmatched paragraph starting with 'Figure' assigned 'Figure' style: '{preview}'")
+                    continue
+                # Fallback for appendix headings/labels
+                if "appendix" in text.lower() and "Appendix" in doc.styles:
+                    p.style = "Appendix"
+                    print(f"[WARNING] Unmatched paragraph containing 'appendix' assigned 'Appendix' style: '{preview}'")
+                    continue
+                if not any(text.lower().startswith(h.lower()) for h in heading_styles):
+                    if "Normal" in doc.styles:
+                        p.style = "Normal"
+                        print(f"[WARNING] Unmatched paragraph assigned 'Normal' style: '{preview}'")
+                        continue
+                print(f"[DEBUG] No style mapping found for paragraph (preview): '{preview}'")
+                print(f"[DEBUG] Closest style map keys: {close_matches}")
+                print(f"[DEBUG] All style map keys: {list(style_map.keys())}")
+                raise ValueError(f"No style mapping found for element: '{preview}'. All document elements must have a defined style.")
+
+        # Second pass: Apply advanced formatting
+        for p in doc.paragraphs:
+            text = p.text.strip()
+            if not text:
+                continue
+
+            # Get style name with exact matching
+            style_name = style_map.get(text)
+            
+            if style_name is None:
+                # Only allow specific section titles without explicit mapping
+                if text in ["Abstract", "References"]:
+                    style_name = text
+                else:
+                    raise ValueError(f"No style mapping found for element: '{text}'. "
+                                   "All document elements must have a defined style.")
+            
+            # Apply the style with strict validation
+            self._apply_advanced_style(p, style_name)
+            
+            # Special handling for references
             if style_name == "References":
                 self._apply_reference_formatting(p, style=self.style_name)
 
@@ -521,14 +931,26 @@ class AdvancedFormatter:
                 setattr(p_format, attr, value)
 
     def _apply_advanced_style(self, paragraph, style_name):
-        config = self.style_guide["styles"].get(style_name, {})
+        """Apply advanced styling to a paragraph with strict style validation."""
+        try:
+            # Try to get the style from the document
+            style = paragraph.style = style_name
+        except KeyError:
+            # If style doesn't exist, raise an error
+            raise ValueError(
+                f"Style '{style_name}' is not defined in the document. "
+                "Please ensure all required styles are defined in the style guide."
+            )
         
-        if "font" in config:
+        # Apply style settings from style guide if available
+        style_config = self.style_guide["styles"].get(style_name, {})
+        
+        if "font" in style_config:
             for run in paragraph.runs:
-                self._apply_font_style(run.font, config["font"])
+                self._apply_font_style(run.font, style_config["font"])
         
-        if "paragraph" in config:
-            self._apply_paragraph_style(paragraph, config["paragraph"])
+        if "paragraph" in style_config:
+            self._apply_paragraph_style(paragraph, style_config["paragraph"])
 
     def _insert_page_breaks(self, doc):
         page_break_styles = ["Heading 1", "Appendices Title"]
@@ -810,6 +1232,9 @@ def main():
                 return 1
             finally:
                 batch_processor.cleanup()
+        
+        else:
+            # Default mode - spell check then format
             print(f"🔍 Checking spelling: {input_path}")
             checker = DocumentChecker(english_variation=args.english)
             try:

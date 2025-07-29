@@ -50,6 +50,7 @@ class RateLimitManager:
     def __init__(self, model_name: str = "gemini-2.0-flash"):
         """
         Initialize the rate limit manager.
+        print(f"[DEBUG] RateLimitManager.__init__: Initializing for model {model_name}")
         
         Args:
             model_name: The Gemini model being used
@@ -64,6 +65,7 @@ class RateLimitManager:
             model_name, self.DEFAULT_RATE_LIMITS["default"]
         )
         
+        print(f"[DEBUG] RateLimitManager.__init__: Rate limits: {self.rate_limits}")
         logger.info(f"Rate limit manager initialized for {model_name}")
         logger.info(f"Limits: {self.rate_limits['rpm']} RPM, {self.rate_limits['tpm']} TPM, {self.rate_limits['rpd']} RPD")
     
@@ -348,6 +350,7 @@ class RateLimitManager:
     def execute_with_rate_limit(self, func, *args, **kwargs):
         """
         Execute a function with rate limit checking and retry logic.
+        print(f"[DEBUG] RateLimitManager.execute_with_rate_limit: Starting execution")
         
         Args:
             func: The function to execute

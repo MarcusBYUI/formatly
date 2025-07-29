@@ -350,6 +350,507 @@ STYLE_GUIDES = {
                 },
                 "based_on": "Normal",
                 "next_style": "Normal"
+            },
+            "Author": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": False,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.CENTER,
+                    "space_before": Pt(12),
+                    "space_after": Pt(12),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "Institution": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": False,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.CENTER,
+                    "space_before": Pt(6),
+                    "space_after": Pt(6),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "Course": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": False,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.CENTER,
+                    "space_before": Pt(6),
+                    "space_after": Pt(6),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "Instructor": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": False,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.CENTER,
+                    "space_before": Pt(6),
+                    "space_after": Pt(6),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "Date": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": False,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.CENTER,
+                    "space_before": Pt(6),
+                    "space_after": Pt(12),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "Dedication": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": False,
+                    "italic": True,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.CENTER,
+                    "space_before": Pt(12),
+                    "space_after": Pt(12),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "Acknowledgments": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": False,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.LEFT,
+                    "space_before": Pt(0),
+                    "space_after": Pt(0),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE,
+                    "first_line_indent": Inches(0.5)
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "Preface": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": False,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.LEFT,
+                    "space_before": Pt(0),
+                    "space_after": Pt(0),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE,
+                    "first_line_indent": Inches(0.5)
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "TOC Heading": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": True,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.CENTER,
+                    "space_before": Pt(24),
+                    "space_after": Pt(6),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "List of Figures": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": True,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.CENTER,
+                    "space_before": Pt(24),
+                    "space_after": Pt(6),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "List of Tables": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": True,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.CENTER,
+                    "space_before": Pt(24),
+                    "space_after": Pt(6),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "List of Abbreviations": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": True,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.CENTER,
+                    "space_before": Pt(24),
+                    "space_after": Pt(6),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "Glossary": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": False,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.LEFT,
+                    "space_before": Pt(0),
+                    "space_after": Pt(0),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE,
+                    "first_line_indent": Inches(0.5)
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "Keywords": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": False,
+                    "italic": True,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.LEFT,
+                    "space_before": Pt(6),
+                    "space_after": Pt(12),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE,
+                    "first_line_indent": Inches(0.5)
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "Equation": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": False,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.CENTER,
+                    "space_before": Pt(12),
+                    "space_after": Pt(12),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "Code Block": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Courier New",
+                    "size": Pt(10),
+                    "bold": False,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.LEFT,
+                    "space_before": Pt(6),
+                    "space_after": Pt(6),
+                    "line_spacing": WD_LINE_SPACING.SINGLE,
+                    "left_indent": Inches(0.5)
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "List": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": False,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.LEFT,
+                    "space_before": Pt(0),
+                    "space_after": Pt(0),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE,
+                    "left_indent": Inches(0.5)
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "Citation": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": False,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.LEFT,
+                    "space_before": Pt(0),
+                    "space_after": Pt(0),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE,
+                    "first_line_indent": Inches(0.5)
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "Footnote": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(10),
+                    "bold": False,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.LEFT,
+                    "space_before": Pt(0),
+                    "space_after": Pt(0),
+                    "line_spacing": WD_LINE_SPACING.SINGLE,
+                    "first_line_indent": Inches(0)
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "Endnote": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(10),
+                    "bold": False,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.LEFT,
+                    "space_before": Pt(0),
+                    "space_after": Pt(0),
+                    "line_spacing": WD_LINE_SPACING.SINGLE,
+                    "first_line_indent": Inches(0)
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "Chart": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": True,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.CENTER,
+                    "space_before": Pt(12),
+                    "space_after": Pt(0),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "Image": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": True,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.CENTER,
+                    "space_before": Pt(12),
+                    "space_after": Pt(0),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "Appendix": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": False,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.LEFT,
+                    "space_before": Pt(0),
+                    "space_after": Pt(0),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE,
+                    "first_line_indent": Inches(0.5)
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "Appendix Heading": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": True,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.CENTER,
+                    "space_before": Pt(24),
+                    "space_after": Pt(6),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE,
+                    "keep_with_next": True
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "Bibliography": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": False,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.LEFT,
+                    "space_before": Pt(0),
+                    "space_after": Pt(0),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE,
+                    "left_indent": Inches(0.5),
+                    "first_line_indent": Inches(-0.5)
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "Index": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": False,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.LEFT,
+                    "space_before": Pt(0),
+                    "space_after": Pt(0),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE,
+                    "first_line_indent": Inches(0)
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
+            },
+            "Author Bio": {
+                "type": WD_STYLE_TYPE.PARAGRAPH,
+                "font": {
+                    "name": "Times New Roman",
+                    "size": Pt(12),
+                    "bold": False,
+                    "italic": False,
+                    "color": RGBColor(0, 0, 0)
+                },
+                "paragraph": {
+                    "alignment": WD_ALIGN_PARAGRAPH.LEFT,
+                    "space_before": Pt(0),
+                    "space_after": Pt(0),
+                    "line_spacing": WD_LINE_SPACING.DOUBLE,
+                    "first_line_indent": Inches(0.5)
+                },
+                "based_on": "Normal",
+                "next_style": "Normal"
             }
         }
     },

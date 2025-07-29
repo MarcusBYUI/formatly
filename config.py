@@ -15,11 +15,15 @@ class Config:
     """Configuration class for Formatly V3."""
     
     def __init__(self):
+        print(f"[DEBUG] Config.__init__: Initializing configuration...")
         self.api_key = self._get_api_key()
+        print(f"[DEBUG] Config.__init__: API key configured: {'Yes' if self.api_key else 'No'}")
         self.model_name = os.getenv("GEMINI_MODEL", "gemini-2.0-flash-exp")
+        print(f"[DEBUG] Config.__init__: Model name: {self.model_name}")
         self.max_retries = int(os.getenv("MAX_RETRIES", "3"))
         self.timeout = int(os.getenv("TIMEOUT", "30"))
         self.log_level = os.getenv("LOG_LEVEL", "INFO")
+        print(f"[DEBUG] Config.__init__: Max retries: {self.max_retries}, Timeout: {self.timeout}s")
         
         # Gemini API settings
         self.temperature = float(os.getenv("GEMINI_TEMPERATURE", "1"))
@@ -30,21 +34,27 @@ class Config:
         
     def _get_api_key(self) -> Optional[str]:
         """Securely retrieve API key from environment variables."""
-        return os.getenv("GEMINI_API_KEY")
+        api_key = os.getenv("GEMINI_API_KEY")
+        print(f"[DEBUG] Config._get_api_key: Retrieved API key length: {len(api_key) if api_key else 0}")
+        return api_key
     
     def is_api_key_configured(self) -> bool:
         """Check if API key is configured."""
-        return self.api_key is not None and len(self.api_key.strip()) > 0
+        configured = self.api_key is not None and len(self.api_key.strip()) > 0
+        print(f"[DEBUG] Config.is_api_key_configured: {configured}")
+        return configured
     
     def get_safe_config(self) -> Dict[str, Any]:
         """Get configuration without sensitive data for logging."""
-        return {
+        safe_config = {
             "model_name": self.model_name,
             "max_retries": self.max_retries,
             "timeout": self.timeout,
             "log_level": self.log_level,
             "api_key_configured": self.is_api_key_configured()
         }
+        print(f"[DEBUG] Config.get_safe_config: {safe_config}")
+        return safe_config
 
 # Global configuration instance
 config = Config()

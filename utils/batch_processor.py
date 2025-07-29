@@ -28,6 +28,7 @@ class BatchProcessor:
     def __init__(self, api_key: str = API_KEY, model_name: str = MODEL_NAME):
         """
         Initialize the batch processor with API credentials.
+        print(f"[DEBUG] BatchProcessor.__init__: Initializing with model {model_name}")
         
         Args:
             api_key: Gemini API key (default: from environment)
@@ -59,6 +60,7 @@ class BatchProcessor:
                                          system_instruction: Optional[str] = None) -> str:
         """
         Create a batch job from a list of paragraphs.
+        print(f"[DEBUG] BatchProcessor.create_batch_job_from_paragraphs: Creating batch with {len(paragraphs)} paragraphs")
         
         Args:
             paragraphs: List of paragraph texts to process
@@ -127,6 +129,7 @@ class BatchProcessor:
                                         batch_name: Optional[str] = None) -> str:
         """
         Create a specialized batch job for document formatting.
+        print(f"[DEBUG] BatchProcessor.create_batch_job_for_formatting: Preparing to format with style {style_name}")
         
         Args:
             document_text: The full document text to format
@@ -188,6 +191,7 @@ class BatchProcessor:
     def check_batch_job_status(self, job_name: str) -> Dict:
         """
         Check the status of a batch job.
+        print(f"[DEBUG] BatchProcessor.check_batch_job_status: Checking status of job {job_name}")
         
         Args:
             job_name: Batch job ID to check
