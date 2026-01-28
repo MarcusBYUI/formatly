@@ -1,0 +1,46 @@
+# Style mappings constant
+STYLE_MAPPINGS = {
+    # Front Matter / Preliminary Pages
+    "title": "Title",
+    "author": "Title Author",
+    "institution": "Title Affiliation",
+    "course": "Title Course",
+    "instructor": "Title Instructor",
+    "due_date": "Title Date",
+    "title_department": "Title Department",
+    "title_byline": "Title Byline",
+    "dedication": "Heading 1",
+    "acknowledgments": "Heading 1", # Often Heading 1 in structure
+    "preface": "Heading 1",
+    "epigraph": "Epigraph",
+    "keywords": "Keywords",
+
+    # Key Section Headings (Centralized Mapping)
+    "abstract_heading": "Heading 1", 
+    "references_heading": "Heading 1",
+    "appendix_heading": "Appendix Title",
+    "appendices_heading": "Appendices Title",
+    "heading_1": "Heading 1",
+    "heading_2": "Heading 2",
+    "heading_3": "Heading 3",
+    "heading_4": "Heading 4",
+    "heading_5": "Heading 5",
+
+    # Content Types
+    "abstract_text": "Abstract",
+    "body": "Normal",
+    "reference_list_item": "References",
+    "appendix_text": "Normal",
+    "list_item_number": "List Number",
+    "list_item_bullet": "List Bullet",
+    "list_item_alphabet": "List Alphabet",
+
+    "figure_caption": "Figure Caption",
+    "table_caption": "Table Title",
+    "table_note": "Table Note",
+    "table_data": "Table Body",
+    "footnote": "Footnote Text",
+    "block_quote": "Block Quote",
+    "figure_text": "Normal",
+    "code_block": "Code Block",
+}

@@ -7,7 +7,7 @@ import re
 from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass
 from spellchecker import SpellChecker
-import language_tool_python
+# import language_tool_python
 import google.generativeai as genai
 import json
 import os
@@ -42,6 +42,7 @@ class DocumentChecker:
     def suggest_spelling_corrections(self, paragraphs: List[str]) -> Dict[str, str]:
         """
         Suggest spelling corrections for a list of paragraphs.
+        print(f"[DEBUG] DocumentChecker.suggest_spelling_corrections: Number of paragraphs: {len(paragraphs)}")
 
         Args:
             paragraphs: List of paragraph texts
@@ -51,6 +52,7 @@ class DocumentChecker:
         """
         suggestions = {}
         for paragraph in paragraphs:
+            print(f"[DEBUG] DocumentChecker.suggest_spelling_corrections: Checking paragraph: {paragraph[:30]}...")
             words_with_positions = self._extract_words_with_positions(paragraph)
             for word, _ in words_with_positions:
                 if word.lower() not in self.spell_checker:
@@ -65,6 +67,7 @@ class DocumentChecker:
     def suggest_grammar_corrections(self, paragraphs: List[str]) -> List[Tuple[int, int, int, str]]:
         """
         Suggest grammar corrections for a list of paragraphs.
+        print(f"[DEBUG] DocumentChecker.suggest_grammar_corrections: Number of paragraphs: {len(paragraphs)}")
 
         Args:
             paragraphs: List of paragraph texts
@@ -74,8 +77,10 @@ class DocumentChecker:
         """
         patches = []
         if not self.grammar_checker:
+            print(f"[DEBUG] DocumentChecker.suggest_grammar_corrections: Grammar checker not configured")
             return patches
         for para_idx, paragraph in enumerate(paragraphs):
+            print(f"[DEBUG] DocumentChecker.suggest_grammar_corrections: Checking paragraph {para_idx + 1}")
             matches = self.grammar_checker.check(paragraph)
             for match in matches:
                 patches.append((
@@ -89,6 +94,7 @@ class DocumentChecker:
     def apply_corrections(self, paragraphs: List[str]) -> Tuple[List[str], List[Tuple[str, str]]]:
         """
         Apply spelling and grammar corrections to paragraphs.
+        print(f"[DEBUG] DocumentChecker.apply_corrections: Number of paragraphs: {len(paragraphs)}")
 
         Args:
             paragraphs: List of paragraph texts

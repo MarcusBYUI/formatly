@@ -1,0 +1,100 @@
+Timestamp,Input File,Duration (s),Prompt Tokens,Completion Tokens,Total Tokens
+2025-12-14T23:50:47.452159,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,112.25,12323,23958,42186
+2025-12-15T00:04:58.574652,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,220.21,11441,21541,32982
+2025-12-15T01:28:44.461675,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,117.20,12323,24872,42764
+2025-12-15T09:22:46.118219,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,374.88,11441,21682,33123
+2025-12-15T09:39:47.729736,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,399.35,11441,21331,32772
+2025-12-15T10:53:01.731254,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,361.10,11441,19355,30796
+2025-12-15T11:02:15.659205,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,385.07,11441,21019,32460
+2025-12-17T12:45:24.955475,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,136.49,0,0,0
+2025-12-17T13:39:38.883657,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,113.61,0,0,0
+2025-12-17T14:28:47.608059,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,1174.39,11441,21519,32960
+2025-12-17T15:01:10.030271,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,73.14,0,0,0
+2025-12-17T15:09:37.894172,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,46.26,0,0,0
+2025-12-17T15:23:38.988920,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,557.28,11441,24047,35488
+2025-12-17T20:30:47.802996,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,55.82,0,0,0
+2025-12-17T20:50:19.602208,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,87.68,0,0,0
+2025-12-17T21:03:49.489824,Melanie.docx,94.37,0,0,0
+2025-12-17T22:15:31.727243,Melanie.docx,71.39,0,0,0
+2025-12-18T00:59:23.992036,Patient Management records.docx,9.02,0,0,0
+2025-12-18T01:01:54.612336,Patient Management records.docx,73.49,2458,2720,5178
+2025-12-19T09:21:31.026160,Edited - Patient Management records.docx,8.98,0,0,0
+2025-12-19T09:33:09.535664,Edited - Patient Management records.docx,12.37,0,0,0
+2025-12-19T10:01:20.406568,Edited - Patient Management records.docx,6.78,0,0,0
+2025-12-19T10:27:52.071856,Edited - Patient Management records.docx,3.83,0,0,0
+2025-12-19T13:02:07.848996,Edited - Patient Management records.docx,16.43,0,0,0
+2025-12-19T13:06:51.467122,Edited - Patient Management records.docx,17.24,0,0,0
+2025-12-19T13:12:34.809339,Edited - Patient Management records.docx,7.93,0,0,0
+2025-12-19T13:15:49.484461,Edited - Patient Management records.docx,16.94,0,0,0
+2025-12-19T13:22:17.034304,Edited - Patient Management records.docx,8.66,0,0,0
+2025-12-19T13:27:47.741288,Edited - Patient Management records.docx,8.62,0,0,0
+2025-12-19T13:42:18.109988,Edited - Patient Management records.docx,56.07,1184,1602,2786
+2025-12-19T14:28:18.814393,Edited - Patient Management records.docx,10.24,0,0,0
+2025-12-19T15:49:14.721962,Edited - Patient Management records.docx,6.92,0,0,0
+2025-12-19T16:10:32.292142,Edited - Patient Management records.docx,11.10,0,0,0
+2025-12-19T16:47:42.161187,Edited - Patient Management records.docx,8.78,0,0,0
+2025-12-19T17:13:37.852893,dissertation_for_initial_review_Maha_Alotaibi .docx,39.55,0,0,0
+2025-12-20T16:29:24.781161,nathan research.docx,31.41,0,0,0
+2025-12-20T22:35:17.027880,DMIN_Dissertation_Turabian_Template (1).docx,315.69,0,0,0
+2025-12-20T22:40:58.159316,DMIN_Dissertation_Turabian_Template (1).docx,28.73,0,0,0
+2025-12-21T11:30:46.825349,nathan research.docx,32.15,0,0,0
+2025-12-21T12:24:50.705554,mla_thesis_template-1.docx,36.28,0,0,0
+2025-12-21T13:49:21.502154,01MASTERS THESIS FULL.docx,75.44,0,0,0
+2025-12-21T16:57:35.121364,01MASTERS THESIS FULL.docx,148.43,0,0,0
+2025-12-28T08:50:55.580467,input.docx,294.41,7668,10509,18177
+2025-12-29T15:58:20.552718,input.docx,9.24,0,0,0
+2025-12-31T08:56:11.082993,input.docx,3.98,0,0,0
+2025-12-31T09:23:33.100093,input.docx,10.30,0,0,0
+2025-12-31T09:44:22.775376,input.docx,7.76,0,0,0
+2025-12-31T10:45:13.186405,input.docx,10.61,0,0,0
+2025-12-31T12:17:51.221752,input.docx,10.49,0,0,0
+2025-12-31T12:22:22.137677,input.docx,8.48,0,0,0
+2025-12-31T12:24:09.411295,input.docx,8.60,0,0,0
+2025-12-31T12:32:17.946852,input.docx,11.17,0,0,0
+2025-12-31T12:42:21.945544,input.docx,11.56,0,0,0
+2025-12-31T12:46:40.594286,My Research.docx,8.04,0,0,0
+2025-12-31T12:49:07.928705,My Research.docx,23.31,0,0,0
+2025-12-31T12:51:54.183767,My Research.docx,22.30,0,0,0
+2026-01-02T18:47:58.003406,Research.docx,133.99,0,0,0
+2026-01-02T18:47:58.007798,My Research.docx,367.11,0,0,0
+2026-01-02T18:48:03.591433,References.docx,27.13,0,0,0
+2026-01-02T19:04:17.948336,References.docx,27.65,0,0,0
+2026-01-03T10:48:25.190457,RoughDaya.docx,123.65,0,0,0
+2026-01-03T11:17:54.491327,1_Simple_Academic_Essay.docx,6.04,0,0,0
+2026-01-03T16:10:01.618925,test_document_Title Page.docx,11.26,0,0,0
+2026-01-03T17:18:57.351435,test_document_Title Page.docx,8.23,0,0,0
+2026-01-03T17:55:48.953280,test_document_Title Page.docx,6.24,0,0,0
+2026-01-03T18:05:30.383284,Neat version.docx,158.54,0,0,0
+2026-01-03T18:10:27.487798,Neat version.docx,142.94,0,0,0
+2026-01-03T18:49:22.636024,Neat version.docx,390.60,0,0,0
+2026-01-04T08:46:05.060739,test_document_Title Page.docx,15.47,1037,376,1413
+2026-01-04T08:49:34.785388,test_document_Title Page.docx,6.20,0,0,0
+2026-01-04T08:58:19.964136,test_document_Title Page.docx,5.51,0,0,0
+2026-01-04T08:59:29.786663,test_document_Title Page.docx,5.97,0,0,0
+2026-01-04T09:00:51.789456,test_document_Title Page.docx,5.89,0,0,0
+2026-01-04T09:04:24.117270,Neat version.docx,166.67,0,0,0
+2026-01-07T03:29:16.722732,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,33.75,0,0,0
+2026-01-07T03:31:06.755039,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,24.72,0,0,0
+2026-01-07T03:45:23.640819,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,29.94,0,0,0
+2026-01-07T11:17:24.954315,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,23.28,0,0,0
+2026-01-07T12:24:10.733430,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,34.81,0,0,0
+2026-01-07T12:30:55.196949,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,30.79,0,0,0
+2026-01-07T12:32:37.099615,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,30.91,0,0,0
+2026-01-07T12:40:04.199085,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,30.44,0,0,0
+2026-01-07T12:45:50.298553,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,30.39,0,0,0
+2026-01-07T14:55:38.473111,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,26.47,0,0,0
+2026-01-07T14:58:47.013568,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,25.85,0,0,0
+2026-01-07T15:07:34.062033,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,59.42,0,0,0
+2026-01-07T15:10:56.565472,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,45.63,0,0,0
+2026-01-07T15:24:02.845651,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,29.03,0,0,0
+2026-01-07T16:34:23.476334,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,50.15,0,0,0
+2026-01-07T17:19:35.168507,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,29.00,0,0,0
+2026-01-07T17:41:03.443658,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,27.01,0,0,0
+2026-01-07T17:51:59.822307,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,63.91,0,0,0
+2026-01-07T18:17:30.593387,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,38.97,0,0,0
+2026-01-07T21:21:02.556170,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,31.38,0,0,0
+2026-01-07T21:23:29.142009,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,23.26,0,0,0
+2026-01-08T11:41:07.591588,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,30.26,0,0,0
+2026-01-08T11:51:42.965269,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,31.48,0,0,0
+2026-01-13T22:19:02.786458,test_input.docx,11.32,965,217,1182
+2026-01-13T23:22:39.559216,test_input.docx,7.43,0,0,0

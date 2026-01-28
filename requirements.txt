@@ -2,4 +2,13 @@ google-generativeai
 python-docx
 python-dotenv
 pyspellchecker
-language-tool-python
+json5
+fastapi
+uvicorn
+python-multipart
+pydantic
+openai
+httpx
+supabase
+PyJWT
+PySide6

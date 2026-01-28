@@ -1,0 +1,178 @@
+Timestamp,Input File,Duration (s),Prompt Tokens,Completion Tokens,Total Tokens
+2025-12-18T15:41:42.853835,Anita SIWES.docx,39.91,0,0,0
+2025-12-19T08:02:15.885706,Anita SIWES.docx,370.14,5833,12997,18830
+2025-12-19T08:29:37.691144,Edited - Patient Management records.docx,9.13,0,0,0
+2025-12-19T08:36:06.303769,Edited - Patient Management records.docx,89.02,1176,1608,2784
+2025-12-19T08:38:33.026395,Edited - Patient Management records.docx,9.23,0,0,0
+2025-12-19T09:01:13.429803,Edited - Patient Management records.docx,8.24,0,0,0
+2026-01-04T22:54:52.380598,My Research.docx,27.07,0,0,0
+2026-01-05T09:41:17.874905,My Research.docx,21.76,0,0,0
+2026-01-05T11:49:41.084200,My Research.docx,18.93,0,0,0
+2026-01-05T12:18:17.011498,My Research.docx,15.03,0,0,0
+2026-01-05T12:55:22.783953,My Research.docx,20.65,0,0,0
+2026-01-05T15:46:56.061146,My Research.docx,15.78,0,0,0
+2026-01-05T16:48:43.066582,My Research.docx,19.32,0,0,0
+2026-01-05T16:50:55.655399,My Research.docx,30.96,0,0,0
+2026-01-05T17:42:00.509691,My Research.docx,16.18,0,0,0
+2026-01-06T10:00:25.571021,test_document_styled.docx,33.29,0,0,0
+2026-01-06T10:11:03.701098,test_document_styled.docx,20.96,0,0,0
+2026-01-06T10:15:07.192785,test_document_styled.docx,22.09,0,0,0
+2026-01-06T10:19:32.083103,test_document_styled.docx,27.21,0,0,0
+2026-01-06T12:23:22.124788,test_document_styled.docx,20.15,0,0,0
+2026-01-06T14:06:58.875748,test_document_styled.docx,17.96,0,0,0
+2026-01-06T14:20:15.510726,test_document_styled.docx,23.46,0,0,0
+2026-01-06T15:33:51.570091,My Research.docx,23.38,0,0,0
+2026-01-06T15:39:22.498470,References.docx,25.74,0,0,0
+2026-01-06T15:43:08.702182,My Research.docx,45.96,0,0,0
+2026-01-06T15:45:04.149967,My Research.docx,18.44,0,0,0
+2026-01-06T15:51:22.775212,My Research.docx,14.86,0,0,0
+2026-01-06T15:59:47.167497,My Research.docx,16.09,0,0,0
+2026-01-06T16:13:49.475604,My Research.docx,32.64,0,0,0
+2026-01-06T16:18:49.822497,test_document_Title Page.docx,22.57,0,0,0
+2026-01-06T16:32:30.601238,My Research.docx,9.58,0,0,0
+2026-01-06T16:34:06.462709,My Research.docx,10.59,0,0,0
+2026-01-06T16:39:36.368467,test_document_Title Page.docx,3.65,0,0,0
+2026-01-06T16:45:12.976853,test_document_Title Page.docx,3.06,0,0,0
+2026-01-06T17:33:17.231732,test_document_styled.docx,7.20,0,0,0
+2026-01-06T17:34:26.596883,test_document_styled.docx,5.87,0,0,0
+2026-01-06T17:36:32.391682,test_document_styled.docx,6.81,0,0,0
+2026-01-06T17:46:21.898030,test_document_styled.docx,23.97,0,0,0
+2026-01-06T17:55:13.987043,test_document_styled.docx,24.83,0,0,0
+2026-01-06T18:18:04.276644,test_document_Title Page.docx,5.06,0,0,0
+2026-01-06T22:34:13.580739,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,103.42,0,0,0
+2026-01-06T23:51:18.431689,test_document_styled.docx,19.16,0,0,0
+2026-01-07T00:27:20.645564,411 Faithman.docx,17.33,0,0,0
+2026-01-07T00:27:36.035515,411 Samuel.docx,117.60,0,0,0
+2026-01-07T00:43:51.650444,DOC-20250601-WA0068.docx,21.11,0,0,0
+2026-01-07T00:45:21.757376,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,25.21,0,0,0
+2026-01-07T00:59:15.675751,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,27.57,0,0,0
+2026-01-07T02:43:16.516908,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,32.59,0,0,0
+2026-01-07T21:54:32.729700,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,28.09,0,0,0
+2026-01-07T22:00:49.293746,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,26.04,0,0,0
+2026-01-07T22:15:27.475493,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,20.31,0,0,0
+2026-01-07T22:18:37.929640,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,33.44,0,0,0
+2026-01-07T22:22:38.166517,test_document_styled.docx,14.15,0,0,0
+2026-01-07T22:25:14.330689,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,27.69,0,0,0
+2026-01-07T22:27:23.121422,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,29.91,0,0,0
+2026-01-07T22:40:24.009681,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,28.94,0,0,0
+2026-01-07T23:28:50.622793,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,24.16,0,0,0
+2026-01-07T23:35:50.312355,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,22.88,0,0,0
+2026-01-08T00:10:01.592556,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,26.27,0,0,0
+2026-01-08T00:23:19.244768,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,42.02,0,0,0
+2026-01-08T00:24:26.006412,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,22.03,0,0,0
+2026-01-08T00:28:10.993453,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,31.67,0,0,0
+2026-01-08T00:29:36.485859,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,28.78,0,0,0
+2026-01-08T10:53:44.665191,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,39.68,0,0,0
+2026-01-08T11:14:56.079680,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,26.11,0,0,0
+2026-01-08T11:28:41.378960,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,30.93,0,0,0
+2026-01-08T11:45:25.815821,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,23.96,0,0,0
+2026-01-08T12:10:38.587704,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,20.30,0,0,0
+2026-01-08T14:32:21.060508,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,30.73,0,0,0
+2026-01-08T14:37:48.425130,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,23.23,0,0,0
+2026-01-08T21:46:38.443159,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,36.42,0,0,0
+2026-01-08T22:16:26.154662,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,24.25,0,0,0
+2026-01-09T16:54:53.272312,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,24.01,0,0,0
+2026-01-09T16:56:51.757135,My Research.docx,25.42,0,0,0
+2026-01-09T20:34:59.105597,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,27.98,0,0,0
+2026-01-09T20:38:35.534431,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,28.01,0,0,0
+2026-01-09T20:41:27.743564,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,25.52,0,0,0
+2026-01-09T20:51:42.203249,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,30.06,0,0,0
+2026-01-09T20:53:16.802866,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,45.89,0,0,0
+2026-01-09T21:15:42.024584,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,23.32,0,0,0
+2026-01-09T21:19:27.861045,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,34.09,0,0,0
+2026-01-09T21:58:21.884238,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,25.20,0,0,0
+2026-01-10T09:44:00.624142,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,36.57,0,0,0
+2026-01-10T09:46:31.124637,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,26.22,0,0,0
+2026-01-10T09:47:57.694633,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,27.22,0,0,0
+2026-01-10T09:54:41.943662,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,25.36,0,0,0
+2026-01-10T11:03:07.493582,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,21.73,0,0,0
+2026-01-10T11:04:52.020860,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,22.03,0,0,0
+2026-01-10T17:27:19.541991,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,104.33,0,0,0
+2026-01-10T18:14:58.079183,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,28.57,0,0,0
+2026-01-10T18:18:01.852153,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,103.07,0,0,0
+2026-01-10T18:47:19.398963,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,97.03,0,0,0
+2026-01-10T19:12:26.591354,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,38.17,0,0,0
+2026-01-10T19:16:05.556635,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,45.42,0,0,0
+2026-01-10T19:34:31.899083,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,27.91,0,0,0
+2026-01-10T20:38:32.032971,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,25.97,0,0,0
+2026-01-10T20:43:19.639621,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,30.12,0,0,0
+2026-01-10T20:46:41.282103,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,143.21,0,0,0
+2026-01-10T21:45:16.286794,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,102.85,0,0,0
+2026-01-10T22:05:45.806285,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,29.56,0,0,0
+2026-01-10T22:07:41.346055,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,119.12,0,0,0
+2026-01-10T22:18:22.459055,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,30.61,0,0,0
+2026-01-10T22:28:34.549677,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,100.83,0,0,0
+2026-01-10T22:36:18.838009,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,113.18,0,0,0
+2026-01-11T20:56:50.904377,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,33.60,0,0,0
+2026-01-11T21:12:51.194293,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,27.63,0,0,0
+2026-01-11T21:29:59.179555,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,27.46,0,0,0
+2026-01-11T22:34:59.947555,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,26.52,0,0,0
+2026-01-11T22:52:55.313612,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,30.26,0,0,0
+2026-01-11T23:13:44.404917,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,36.37,0,0,0
+2026-01-11T23:23:45.658200,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,27.48,0,0,0
+2026-01-12T01:45:52.625025,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,26.65,0,0,0
+2026-01-12T01:53:14.578550,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,35.01,0,0,0
+2026-01-12T01:59:59.233402,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,20.06,0,0,0
+2026-01-12T02:42:36.213155,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,23.91,0,0,0
+2026-01-12T02:45:52.763445,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,92.47,0,0,0
+2026-01-12T09:06:28.842083,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,33.97,0,0,0
+2026-01-12T09:46:48.535621,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,27.26,0,0,0
+2026-01-12T09:58:58.769955,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,24.41,0,0,0
+2026-01-12T10:54:47.889499,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,31.07,0,0,0
+2026-01-12T10:57:28.298937,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,81.02,0,0,0
+2026-01-12T17:55:31.086917,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,28.83,0,0,0
+2026-01-12T21:53:43.689486,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,28.39,0,0,0
+2026-01-12T21:57:01.821944,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,134.17,0,0,0
+2026-01-13T18:15:53.880971,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,103.76,0,0,0
+2026-01-15T09:59:04.348135,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,112.76,0,0,0
+2026-01-15T10:21:55.622096,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,137.09,0,0,0
+2026-01-15T10:27:35.563756,Godswill Chidera Osonwa Chapter 2 (20SC_CO_922).docx,11.83,0,0,0
+2026-01-15T14:55:50.715257,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,113.78,0,0,0
+2026-01-15T14:59:39.825447,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,29.58,0,0,0
+2026-01-15T15:00:49.979423,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,218.75,0,0,0
+2026-01-15T15:03:10.520059,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,27.24,0,0,0
+2026-01-16T10:12:08.892280,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,116.97,0,0,0
+2026-01-16T10:15:08.414880,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,117.47,0,0,0
+2026-01-16T14:35:15.079320,Sovereign Debt Trade-offs between Growth and Financial Distress Final for proofread.docx,106.02,0,0,0
+2026-01-16T16:05:36.879528,Sovereign Debt Trade-offs between Growth and Financial Distress Final for formatdocx.docx,113.22,0,0,0
+2026-01-16T21:38:38.094279,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,243.30,0,0,0
+2026-01-16T21:41:54.306985,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,142.05,0,0,0
+2026-01-17T21:04:39.787537,Sovereign Debt Trade-offs between Growth and Financial Distress Final for formatdocx.docx,69.28,0,0,0
+2026-01-22T03:37:50.444434,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,35.63,0,0,0
+2026-01-22T03:48:32.262891,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,24.44,0,0,0
+2026-01-22T03:50:53.634308,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,26.95,0,0,0
+2026-01-22T22:59:26.125227,Research.docx,27.71,0,0,0
+2026-01-23T00:31:23.682758,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,22.78,0,0,0
+2026-01-23T00:34:28.225491,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,97.32,0,0,0
+2026-01-23T00:40:24.795553,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,94.25,0,0,0
+2026-01-23T00:43:14.136747,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,119.31,0,0,0
+2026-01-23T01:16:35.992721,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,110.16,0,0,0
+2026-01-23T01:28:44.229236,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,160.99,0,0,0
+2026-01-23T01:52:05.244356,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,96.41,0,0,0
+2026-01-23T01:55:08.196157,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,151.02,0,0,0
+2026-01-23T10:19:08.139000,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,114.28,0,0,0
+2026-01-25T21:45:21.802580,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,22.62,0,0,0
+2026-01-25T22:04:48.874244,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,28.54,0,0,0
+2026-01-25T22:31:55.686423,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,27.36,0,0,0
+2026-01-25T22:33:03.028551,Critical Evaluation of Aldi’s Response During the Cost-of-Living Crisis in the UK.docx,22.27,0,0,0
+2026-01-25T22:35:45.333372,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,111.99,0,0,0
+2026-01-25T22:45:36.109610,aListTest.docx,15.40,0,0,0
+2026-01-25T22:46:53.167205,aListTest.docx,6.78,0,0,0
+2026-01-25T22:52:32.978324,aListTest.docx,9.22,0,0,0
+2026-01-25T23:23:55.679495,aListTest.docx,7.03,0,0,0
+2026-01-25T23:28:31.303277,aListTest.docx,9.60,0,0,0
+2026-01-25T23:31:32.571900,aListTest.docx,7.27,0,0,0
+2026-01-25T23:45:30.229561,aListTest.docx,7.99,0,0,0
+2026-01-25T23:45:33.019225,aListTest.docx,115.42,0,0,0
+2026-01-25T23:51:23.930121,aListTest.docx,41.45,0,0,0
+2026-01-25T23:51:24.203595,aListTest.docx,7.86,0,0,0
+2026-01-25T23:52:22.432157,aListTest.docx,5.48,0,0,0
+2026-01-25T23:55:38.113013,aListTest.docx,6.73,0,0,0
+2026-01-25T23:55:40.261718,aListTest.docx,45.93,0,0,0
+2026-01-26T00:00:19.283593,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,90.83,0,0,0
+2026-01-26T00:10:09.037752,aListTest.docx,9.39,0,0,0
+2026-01-26T00:12:56.453489,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,116.90,0,0,0
+2026-01-26T01:36:37.777277,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,132.54,0,0,0
+2026-01-26T22:22:49.246009,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,119.83,0,0,0
+2026-01-27T13:57:16.167007,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,121.60,0,0,0
+2026-01-27T20:58:22.785604,Godswill_Chidera_Osonwa_project_(20_SC_CO_922).docx,101.15,0,0,0

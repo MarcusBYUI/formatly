@@ -1,17 +1,22 @@
 """
 Rate Limit Manager for Gemini API
 Handles rate limiting, quota detection, and retry logic for different models and tiers.
+Integrates with APIKeyManager for key rotation on rate limit failures.
 """
 
 import time
+import os
 import re
 import sys
 from typing import Dict, Optional, Tuple
 from datetime import datetime, timedelta
 import logging
+from .api_key_manager import api_key_manager
+from config import MODEL_QUOTAS
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+# Configure logging
+# logging.basicConfig(level=logging.INFO) # Removed to allow entry-point configuration
 logger = logging.getLogger(__name__)
 
 class DailyQuotaExceededException(Exception):
@@ -30,22 +35,8 @@ class RateLimitManager:
     """
     Manages rate limits for Gemini API requests with dynamic quota detection.
     Handles retries with exponential backoff and user notifications.
+    Integrates with APIKeyManager for key rotation on rate limit failures.
     """
-    
-    # Default rate limits based on Gemini API documentation
-    DEFAULT_RATE_LIMITS = {
-        # Free Tier models
-        "gemini-2.0-flash": {"rpm": 15, "tpm": 1000000, "rpd": 200},
-        "gemini-2.0-flash-lite": {"rpm": 30, "tpm": 1000000, "rpd": 200},
-        "gemini-2.5-flash": {"rpm": 10, "tpm": 250000, "rpd": 250},
-        "gemini-2.5-flash-lite": {"rpm": 15, "tpm": 250000, "rpd": 1000},
-        "gemini-2.5-pro": {"rpm": 5, "tpm": 250000, "rpd": 100},
-        "gemini-1.5-flash": {"rpm": 15, "tpm": 250000, "rpd": 50},
-        "gemini-1.5-pro": {"rpm": 2, "tpm": 32000, "rpd": 50},
-        
-        # Fallback for unknown models
-        "default": {"rpm": 10, "tpm": 100000, "rpd": 100}
-    }
     
     def __init__(self, model_name: str = "gemini-2.0-flash"):
         """
@@ -58,14 +49,22 @@ class RateLimitManager:
         self.request_times = []
         self.daily_requests = 0
         self.daily_reset_time = datetime.now() + timedelta(days=1)
+        self.current_api_key = None
         
-        # Get rate limits for the model
-        self.rate_limits = self.DEFAULT_RATE_LIMITS.get(
-            model_name, self.DEFAULT_RATE_LIMITS["default"]
-        )
+        # Get rate limits for the model from MODEL_QUOTAS with fallback
+        # Get rate limits for the model from MODEL_QUOTAS
+        default_limits = {"rpm": 5, "tpm": 100000, "rpd": 100, "max_tokens": 50000}
+        
+        if os.getenv("DEFAULT_BACKEND") == "huggingface":
+            self.rate_limits = MODEL_QUOTAS.get(model_name, default_limits)
+        else:
+            # For other backends (Gemini), require explicit quotas
+            self.rate_limits = MODEL_QUOTAS.get(model_name)
+            if not self.rate_limits:
+                 raise ValueError(f"Rate limits for model '{model_name}' not defined in config.MODEL_QUOTAS")
         
         logger.info(f"Rate limit manager initialized for {model_name}")
-        logger.info(f"Limits: {self.rate_limits['rpm']} RPM, {self.rate_limits['tpm']} TPM, {self.rate_limits['rpd']} RPD")
+        logger.info(f"Limits: {self.rate_limits['rpm']} RPM, {self.rate_limits.get('tpm', 100000)} TPM, {self.rate_limits['rpd']} RPD")
     
     def extract_rate_limit_info(self, error_message: str) -> Dict:
         """
@@ -348,6 +347,7 @@ class RateLimitManager:
     def execute_with_rate_limit(self, func, *args, **kwargs):
         """
         Execute a function with rate limit checking and retry logic.
+        Integrates with APIKeyManager for key rotation on rate limit failures.
         
         Args:
             func: The function to execute
@@ -361,6 +361,13 @@ class RateLimitManager:
         retry_count = 0
         
         while retry_count < max_retries:
+            # Get API key if we don't have one or previous one failed
+            if not self.current_api_key:
+                self.current_api_key = api_key_manager.get_next_key()
+                if not self.current_api_key:
+                    raise Exception("No available API keys")
+                kwargs["api_key"] = self.current_api_key
+            
             # Check rate limit before making request
             can_proceed, wait_time = self.check_rate_limit()
             
@@ -369,7 +376,7 @@ class RateLimitManager:
                 continue
             
             try:
-                # Execute the function
+                # Execute the function with current API key
                 result = func(*args, **kwargs)
                 
                 # Record successful request
@@ -381,9 +388,26 @@ class RateLimitManager:
                 error_str = str(e)
                 
                 # Check if this is a rate limit error
-                if "429" in error_str and "exceeded your current quota" in error_str:
+                # Check if this is a rate limit error or model overload (503)
+                if ("429" in error_str and "exceeded your current quota" in error_str) or \
+                   ("503" in error_str and "overloaded" in error_str):
+                    
                     retry_count += 1
-                    should_retry, wait_time = self.handle_rate_limit_error(error_str)
+                    
+                    is_overload = "503" in error_str
+                    
+                    if not is_overload:
+                        # Only mark key failed for rate limits, not server overloads
+                        api_key_manager.mark_key_failed(self.current_api_key)
+                        self.current_api_key = None
+                    
+                    if is_overload:
+                        # For overload, use standard backoff
+                        should_retry = True
+                        wait_time = 5 * (2 ** (retry_count - 1)) # 5, 10, 20...
+                        print(f"⚠️ Service Overloaded (503). Retrying in {wait_time}s...")
+                    else:
+                        should_retry, wait_time = self.handle_rate_limit_error(error_str)
                     
                     if not should_retry:
                         # Daily limit reached - don't retry
@@ -391,11 +415,16 @@ class RateLimitManager:
                         raise
                     
                     if retry_count < max_retries:
-                        print(f"🔄 Rate limit exceeded (attempt {retry_count}/{max_retries})")
-                        self.wait_with_progress(wait_time)
-                        continue
+                         if not is_overload and api_key_manager.get_available_key_count() > 0:
+                            print(f"🔄 Rate limit exceeded (attempt {retry_count}/{max_retries})")
+                            print(f"🔑 Switching to next available API key...")
+                         elif is_overload:
+                            print(f"🔄 Retrying request (attempt {retry_count}/{max_retries})")
+                            
+                         self.wait_with_progress(wait_time)
+                         continue
                     else:
-                        print(f"❌ Maximum retries ({max_retries}) exceeded for rate limit")
+                        print(f"❌ Maximum retries ({max_retries}) exceeded or no more API keys available")
                         raise
                 
                 # If it's not a rate limit error, re-raise immediately
