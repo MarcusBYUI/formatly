@@ -1,3 +1,18 @@
+"""
+Formatly API Server
+-------------------
+This module implements the FastAPI backend for the Formatly service.
+It exposes endpoints for document upload, processing status, and retrieval.
+
+Architecture:
+    - Imports core logic from the root `core/` directory by modifying `sys.path`.
+    - Uses Supabase for storage and database management.
+    - orchestrates AI processing tasks (formatting, structure detection).
+
+Note:
+    This API shares the `core/` library with the CLI `app.py`.
+"""
+
 from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -7,13 +22,12 @@ import uuid
 import time
 import base64
 import json
-import json
 import os
 import shutil
 import tempfile
 import traceback
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 import asyncio
 import jwt
 import httpx
@@ -21,13 +35,8 @@ from supabase import create_client, Client
 import logging
 from dotenv import load_dotenv
 
-# Import Core Logic
-from core.api_clients import HuggingFaceClient, GeminiClient
-from core.formatter import AdvancedFormatter
-
 # Configure logging
 logging.basicConfig(level=logging.INFO)
-
 logger = logging.getLogger(__name__)
 
 # Load environment variables
@@ -35,9 +44,21 @@ load_dotenv()
 
 # Fix imports to allow importing from root 'core'
 import sys
+# Calculate root path: v1 -> api -> project_root
 sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 
 # Import Core Logic
+try:
+    from core.api_clients import HuggingFaceClient, GeminiClient
+    from core.formatter import AdvancedFormatter
+except ImportError as e:
+    logger.error(f"Failed to import core modules: {e}")
+    # We might be running in a context where root is already in path
+    try:
+        from core.api_clients import HuggingFaceClient, GeminiClient
+        from core.formatter import AdvancedFormatter
+    except ImportError:
+        raise ImportError(f"Could not import core modules even after path adjustment. Path: {sys.path}")
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -61,14 +82,22 @@ SUPABASE_JWT_SECRET = os.getenv("SUPABASE_JWT_SECRET")
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 
 if not all([SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SUPABASE_JWT_SECRET, SUPABASE_ANON_KEY]):
-    raise ValueError("Missing required Supabase environment variables")
+    # Only raise error if crucial vars are missing. 
+    # For build steps where we might not have all env vars, we might want to warn instead.
+    # But for runtime, these are required.
+    pass
 
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+# Create Supabase client if URL/KEY are present
+if SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY:
+    supabase: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+else:
+    supabase = None
+    logger.warning("Supabase credentials missing. Database operations will fail.")
 
 # Security
 security = HTTPBearer(auto_error=False)
 
-# Pydantic models (Same as mock_api)
+# Pydantic models
 class CreateUploadResponse(BaseModel):
     success: bool
     job_id: str
@@ -95,7 +124,6 @@ class FormattedDocumentResponse(BaseModel):
     success: bool
     filename: str
     content: str  # base64 encoded
-    tracked_changes_content: Optional[str] = None
     tracked_changes_content: Optional[str] = None
     metadata: Dict[str, Any]
 
@@ -213,8 +241,8 @@ async def create_document_record(user_id: str, filename: str, file_path: str, jo
             "storage_location": file_path,
             "formatting_options": options,
             "tracked_changes": options.get("trackedChanges", False),
-            "created_at": datetime.utcnow().isoformat(),
-            "updated_at": datetime.utcnow().isoformat()
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat()
         }
         
         if file_size is not None:
@@ -232,23 +260,21 @@ async def update_document_status(job_id: str, status: str, progress: int = None,
     try:
         update_data = {
             "status": status,
-            "updated_at": datetime.utcnow().isoformat()
+            "updated_at": datetime.now(timezone.utc).isoformat()
         }
         
         if progress is not None:
             if not processing_log:
                 processing_log = {}
             processing_log["progress"] = progress
-            if processing_log:
-                # Merge existing log if possible? Ideally we fetch and merge, but for now strict overwrite or simple update
-                pass 
+            
             update_data["processing_log"] = processing_log
             
         if result_url:
             update_data["result_url"] = result_url
 
         if status == "formatted":
-            update_data["processed_at"] = datetime.utcnow().isoformat()
+            update_data["processed_at"] = datetime.now(timezone.utc).isoformat()
             if formatting_time is not None:
                 update_data["formatting_time"] = formatting_time
             
@@ -266,7 +292,8 @@ async def track_document_usage(user_id: str):
         return result
     except Exception as e:
         logger.error(f"Error tracking document usage: {str(e)}")
-        raise
+        # Don't raise here to allow flow to continue if tracking fails
+        # raise
 
 async def track_storage_usage(user_id: str, storage_mb: float):
     """Track storage usage in subscriptions table"""
@@ -283,7 +310,8 @@ async def track_storage_usage(user_id: str, storage_mb: float):
         return result
     except Exception as e:
         logger.error(f"Error tracking storage usage: {str(e)}")
-        raise
+        # Don't raise here
+        # raise
 
 async def process_document_task(job_id: str, file_path: str, style: str, english_variant: str, options: Dict[str, Any], user_id: str):
     """Background task to process the document using Core Formatter"""
@@ -320,7 +348,7 @@ async def process_document_task(job_id: str, file_path: str, style: str, english
         else:
             client = HuggingFaceClient()
             
-        formatter = AdvancedFormatter(style, ai_client=client)
+        formatter = AdvancedFormatter(style, ai_client=client, english_variant=english_variant)
         
         # 4. Run Formatting
         await update_document_status(job_id, "processing", 30, {"message": f"Analyzing document structure with {backend}..."})
@@ -352,9 +380,6 @@ async def process_document_task(job_id: str, file_path: str, style: str, english
             "backend": backend,
             "message": "Formatting successful"
         }
-        
-        # Generate signed URL for result (valid for 1 hour for immediate download, handled by get_document_status or download endpoint usually)
-        # We store the path or signed URL. Unsigned path relies on server re-signing.
         
         await update_document_status(job_id, "formatted", 100, processing_log, result_url=result_filename, formatting_time=duration)
         

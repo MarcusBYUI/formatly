@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+python-docx
+google-generativeai
+python-dotenv
+pyspellchecker
+json5
+python-multipart
+pydantic
+openai
+httpx
+supabase
+PyJWT
