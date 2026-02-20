@@ -51,6 +51,7 @@ sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 try:
     from core.api_clients import HuggingFaceClient, GeminiClient
     from core.formatter import AdvancedFormatter
+    from core.style_guides import STYLE_GUIDES
 except ImportError as e:
     logger.error(f"Failed to import core modules: {e}")
     # We might be running in a context where root is already in path
@@ -148,14 +149,12 @@ class EnglishVariant(BaseModel):
     name: str
     description: str
 
-VALID_STYLES = {"apa", "mla", "chicago", "harvard"}
+VALID_STYLES = set(STYLE_GUIDES.keys())
 MAX_UPLOAD_SIZE_BYTES = 50 * 1024 * 1024  # 50MB
 
 FORMATTING_STYLES = [
-    {"id": "apa", "name": "APA Style", "description": "American Psychological Association"},
-    {"id": "mla", "name": "MLA Style", "description": "Modern Language Association"},
-    {"id": "chicago", "name": "Chicago Style", "description": "Chicago Manual of Style"},
-    {"id": "harvard", "name": "Harvard Style", "description": "Harvard Referencing Style"},
+    {"id": key, "name": f"{key.upper()} Style", "description": val.get("meta", {}).get("description", f"{key.upper()} formatting style")}
+    for key, val in STYLE_GUIDES.items()
 ]
 
 ENGLISH_VARIANTS = [
