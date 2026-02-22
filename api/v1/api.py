@@ -13,15 +13,15 @@ Note:
     This API shares the `core/` library with the CLI `app.py`.
 """
 
-from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, Form
+from fastapi import FastAPI, HTTPException, Depends, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from pydantic import BaseModel
-from typing import Optional, Dict, Any, List
+from pydantic import BaseModel, Field
+from typing import Optional, Dict, Any
+import sys
 import uuid
 import time
 import base64
-import json
 import os
 import shutil
 import tempfile
@@ -30,7 +30,6 @@ from pathlib import Path
 from datetime import datetime, timezone
 import asyncio
 import jwt
-import httpx
 from supabase import create_client, Client
 import logging
 from dotenv import load_dotenv
@@ -42,8 +41,6 @@ logger = logging.getLogger(__name__)
 # Load environment variables
 load_dotenv()
 
-# Fix imports to allow importing from root 'core'
-import sys
 # Calculate root path: v1 -> api -> project_root
 sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 
@@ -88,7 +85,6 @@ else:
 security = HTTPBearer(auto_error=False)
 
 # Pydantic models
-from pydantic import BaseModel, Field
 
 class CreateUploadResponse(BaseModel):
     success: bool
@@ -179,6 +175,8 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
             
         return {"user_id": user_id, "email": payload.get("email")}
         
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Token verification error: {str(e)}")
         raise HTTPException(status_code=401, detail="Token verification failed")
@@ -215,9 +213,11 @@ async def generate_signed_upload_url(filename: str, user_id: str) -> Dict[str, s
             "upload_headers": upload_headers
         }
         
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error generating signed upload URL: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to generate upload URL: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to generate upload URL")
 
 async def create_document_record(user_id: str, filename: str, file_path: str, job_id: str, style: str, language_variant: str, options: Dict[str, Any], file_size: Optional[int] = None) -> str:
     """Create document record in Supabase database"""
@@ -270,10 +270,9 @@ async def update_document_status(job_id: str, status: str, progress: int = None,
             if formatting_time is not None:
                 update_data["formatting_time"] = formatting_time
             
-            # Add tracked changes URL if provided in processing_log
-            if processing_log and "tracked_changes_url" in processing_log:
+            # Add tracked changes URL only when tracking actually produced a file
+            if processing_log and processing_log.get("tracked_changes_url"):
                 update_data["tracked_changes_url"] = processing_log["tracked_changes_url"]
-                # Ensure the tracked_changes boolean reflects reality
                 update_data["tracked_changes"] = True
 
         supabase.table("documents").update(update_data).eq("id", job_id).execute()
@@ -340,7 +339,7 @@ async def process_document_task(job_id: str, file_path: str, style: str, english
         # 4. Run Formatting
         await update_document_status(job_id, "processing", 30, {"message": f"Analyzing document structure with {backend}..."})
         
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         start_time = time.time()
         
         await loop.run_in_executor(None, formatter.format_document, str(local_input_path), str(local_output_path))
@@ -367,7 +366,7 @@ async def process_document_task(job_id: str, file_path: str, style: str, english
                 tracked_path = await loop.run_in_executor(None, tracker.compare_docs)
                 
                 if tracked_path and os.path.exists(tracked_path):
-                    tracked_filename = f"tracked/{job_id}_tracked.docx"
+                    tracked_filename = f"{user_id}/tracked/{job_id}_tracked.docx"
                     with open(tracked_path, "rb") as f:
                         supabase.storage.from_("documents").upload(
                             tracked_filename,
@@ -641,6 +640,7 @@ async def process_document(
         
         file_path = f"legacy/{user['user_id']}/{job_id}.docx"
         
+        uploaded = False
         if request.content:
             try:
                 content_bytes = base64.b64decode(request.content)
@@ -649,8 +649,9 @@ async def process_document(
                     content_bytes,
                     {"content-type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"}
                 )
+                uploaded = True
             except Exception as e:
-                 logger.error(f"Failed to upload legacy content: {e}")
+                logger.error(f"Failed to upload legacy content: {e}")
         
         options = request.options.copy()
         options["trackedChanges"] = request.trackedChanges
@@ -665,8 +666,8 @@ async def process_document(
             options
         )
         
-        # Trigger processing if content was uploaded
-        if request.content:
+        # Trigger processing only if content was successfully uploaded
+        if uploaded:
              asyncio.create_task(process_document_task(
                 job_id, 
                 file_path,
@@ -679,7 +680,7 @@ async def process_document(
         return ProcessDocumentResponse(
             success=True,
             job_id=job_id,
-            status="processing" if request.content else "draft",
+            status="processing" if uploaded else "draft",
             message=f"Document queued for {request.style} formatting"
         )
     except HTTPException:
@@ -720,10 +721,13 @@ async def delete_job(job_id: str, user: dict = Depends(verify_token)):
         doc = response.data[0]
         
         # Delete from storage first
-        if doc.get("storage_location"):
-            supabase.storage.from_("documents").remove([doc["storage_location"]])
-        if doc.get("result_url"):
-            supabase.storage.from_("documents").remove([doc["result_url"]])
+        paths_to_remove = [p for p in [
+            doc.get("storage_location"),
+            doc.get("result_url"),
+            doc.get("tracked_changes_url")
+        ] if p]
+        if paths_to_remove:
+            supabase.storage.from_("documents").remove(paths_to_remove)
             
         # Delete record
         supabase.table("documents").delete().eq("id", job_id).execute()
