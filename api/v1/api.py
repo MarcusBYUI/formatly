@@ -247,52 +247,34 @@ async def create_document_record(user_id: str, filename: str, file_path: str, jo
         logger.error(f"Error creating document record: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to create document record: {str(e)}")
 
-async def update_document_status(job_id: str, status: str, progress: int = None, processing_log: Dict[str, Any] = None, result_url: str = None, formatting_time: float = None):
+async def update_document_status(job_id: str, status: str, progress: int = None, processing_log: Dict[str, Any] = None, result_url: str = None, tracked_changes_url: str = None, formatting_time: float = None):
     """Update document status in database"""
     try:
         update_data = {
             "status": status,
             "updated_at": datetime.now(timezone.utc).isoformat()
         }
-        
+
         if progress is not None:
             if not processing_log:
                 processing_log = {}
             processing_log["progress"] = progress
-            
             update_data["processing_log"] = processing_log
-            
+
         if result_url:
             update_data["result_url"] = result_url
+
+        if tracked_changes_url:
+            update_data["tracked_changes_url"] = tracked_changes_url
+            update_data["tracked_changes"] = True
 
         if status == "formatted":
             update_data["processed_at"] = datetime.now(timezone.utc).isoformat()
             if formatting_time is not None:
                 update_data["formatting_time"] = formatting_time
-            
-            if processing_log:
-                tracked_url = processing_log.get("tracked_changes_url")
-                if tracked_url:
-                    # Update column if it exists; but if it doesn't, we will rely on processing_log
-                    update_data["tracked_changes_url"] = tracked_url
-                    update_data["tracked_changes"] = True
-                elif processing_log.get("tracked_changes_status") == "failed":
-                    # Important: Set to False if requested but failed, so frontend UI behaves correctly
-                    update_data["tracked_changes"] = False
 
-        # Try to update the row. If tracked_changes_url doesn't exist in Supabase DB schema, 
-        # it will error out. We intercept this error, remove the field, and retry.
-        try:
-            supabase.table("documents").update(update_data).eq("id", job_id).execute()
-        except Exception as update_err:
-            error_str = str(update_err).lower()
-            if "tracked_changes_url" in error_str and ("not found" in error_str or "does not exist" in error_str):
-                logger.warning(f"tracked_changes_url column missing from DB. Falling back to processing_log.")
-                update_data.pop("tracked_changes_url", None)
-                supabase.table("documents").update(update_data).eq("id", job_id).execute()
-            else:
-                raise update_err
-        
+        supabase.table("documents").update(update_data).eq("id", job_id).execute()
+
     except Exception as e:
         logger.error(f"Error updating document status: {str(e)}")
 
@@ -380,7 +362,7 @@ async def process_document_task(job_id: str, file_path: str, style: str, english
                 await update_document_status(job_id, "processing", 95, {"message": "Generating tracked changes..."})
                 tracker = TrackChanges(str(local_input_path), str(local_output_path))
                 tracked_path = await loop.run_in_executor(None, tracker.compare_docs)
-                
+
                 if tracked_path and os.path.exists(tracked_path):
                     tracked_filename = f"{user_id}/tracked/{job_id}_tracked.docx"
                     with open(tracked_path, "rb") as f:
@@ -401,14 +383,13 @@ async def process_document_task(job_id: str, file_path: str, style: str, english
             "backend": backend,
             "message": "Formatting successful"
         }
-        
-        if tracked_changes_url:
-             processing_log["tracked_changes_url"] = tracked_changes_url
-             processing_log["tracked_changes_status"] = "success"
-        elif options.get("trackedChanges"):
-             processing_log["tracked_changes_status"] = "failed"
-        
-        await update_document_status(job_id, "formatted", 100, processing_log, result_url=result_filename, formatting_time=duration)
+
+        await update_document_status(
+            job_id, "formatted", 100, processing_log,
+            result_url=result_filename,
+            tracked_changes_url=tracked_changes_url,
+            formatting_time=duration
+        )
         
         # 8. Track usage
         try:
@@ -577,12 +558,7 @@ async def download_document(job_id: str, user: dict = Depends(verify_token)):
         
         # Download tracked changes if available
         tracked_content = None
-        
-        # Try finding tracked_url natively, or in processing_log as fallback
         tracked_url = doc.get("tracked_changes_url")
-        if not tracked_url and doc.get("processing_log"):
-             tracked_url = doc.get("processing_log").get("tracked_changes_url")
-             
         if tracked_url:
             try:
                 tracked_file_content = supabase.storage.from_("documents").download(tracked_url)
@@ -746,10 +722,7 @@ async def delete_job(job_id: str, user: dict = Depends(verify_token)):
             
         doc = response.data[0]
         
-        # Determine tracked URL (native column vs. inside processing_log)
         tracked_url = doc.get("tracked_changes_url")
-        if not tracked_url and doc.get("processing_log"):
-             tracked_url = doc.get("processing_log").get("tracked_changes_url")
         
         # Delete from storage first
         paths_to_remove = [p for p in [
