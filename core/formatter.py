@@ -106,6 +106,7 @@ class DocumentStructureManager:
 
         10. **Block Types**: Assign one of the following types to each block of content:
            - "title", "title_byline", "author", "institution", "title_department", "course", "instructor", "due_date" (Title Page Elements)
+             * GENERAL RULE: Each block must represent ONE distinct semantic element. If two or more different elements appear together (e.g., separated by a newline), extract them into DISTINCT blocks with correct types. Do NOT merge different content types into a single block.
             - "keywords", "epigraph", "abstract_heading", "abstract_text" (Top-level Headings)
             - "dedication_heading", "dedication_body", "acknowledgements_heading", "acknowledgement_body", "preface_heading", "preface_body" (Front Matter)
            - "heading_1", "heading_2", "heading_3", "heading_4", "heading_5". 
