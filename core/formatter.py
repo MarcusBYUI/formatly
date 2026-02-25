@@ -1226,7 +1226,11 @@ class AdvancedFormatter:
             if "space_after" in para_config:
                 para_format.space_after = para_config["space_after"]
             if "line_spacing" in para_config:
-                para_format.line_spacing = para_config["line_spacing"]
+                spacing_val = para_config["line_spacing"]
+                if isinstance(spacing_val, WD_LINE_SPACING):
+                    para_format.line_spacing_rule = spacing_val
+                else:
+                    para_format.line_spacing = spacing_val
 
             # --- Apply Flow Control Properties ---
             if "keep_together" in para_config:
