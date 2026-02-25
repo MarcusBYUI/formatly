@@ -74,28 +74,32 @@ class TrackChanges:
             
             # Save the result
             result.save_files(save_dir)
-            
-            # Clean up/Rename saved file to consistent name if needed
+
+            # Determine the actual saved path from the API response
             saved_files = result.list_files()
-            if saved_files:
-                api_saved_name = saved_files[0].filename
-                api_saved_path = os.path.join(save_dir, api_saved_name)
-                
-                if api_saved_path != comparison_path:
-                    if os.path.exists(comparison_path):
-                        os.remove(comparison_path)
-                    os.rename(api_saved_path, comparison_path)
-            
-            logger.info(f"Comparison saved to: {comparison_path}")
-            
+            if not saved_files:
+                raise RuntimeError("ConvertAPI returned no saved files.")
+
+            api_saved_name = saved_files[0].filename
+            actual_path = os.path.join(save_dir, api_saved_name)
+
+            # Rename to a consistent name only if needed
+            if actual_path != comparison_path:
+                if os.path.exists(comparison_path):
+                    os.remove(comparison_path)
+                os.rename(actual_path, comparison_path)
+                actual_path = comparison_path
+
+            logger.info(f"Comparison saved to: {actual_path}")
+
             # Auto-open on Windows desktop only
             if os.name == 'nt' and not os.getenv("RAILWAY_ENVIRONMENT"):
                 try:
-                    os.startfile(comparison_path)
+                    os.startfile(actual_path)
                 except Exception:
                     pass
-                    
-            return comparison_path
+
+            return actual_path
 
         except Exception as e:
             logger.error(f"Error comparing documents via ConvertAPI: {e}")
