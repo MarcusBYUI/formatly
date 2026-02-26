@@ -75,13 +75,7 @@ class TrackChanges:
             # Save the result
             result.save_files(save_dir)
 
-            # Determine the actual saved path from the API response
-            saved_files = result.list_files()
-            if not saved_files:
-                raise RuntimeError("ConvertAPI returned no saved files.")
-
-            api_saved_name = saved_files[0].filename
-            actual_path = os.path.join(save_dir, api_saved_name)
+            actual_path = os.path.join(save_dir, result.file.filename)
 
             # Rename to a consistent name only if needed
             if actual_path != comparison_path:
