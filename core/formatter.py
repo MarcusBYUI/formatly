@@ -1265,7 +1265,13 @@ class AdvancedFormatter:
 
     def _create_abstract_num(self, doc, format_type, lvl_text):
         """Create abstractNum element for list format."""
-        numbering_part = doc.part.numbering_part
+        try:
+            numbering_part = doc.part.numbering_part
+        except (NotImplementedError, KeyError, AttributeError):
+            numbering_part = None
+            
+        if numbering_part is None:
+            return None
         
         # Find next ID
         next_id = max([int(a.get(qn('w:abstractNumId'))) 
@@ -1319,7 +1325,10 @@ class AdvancedFormatter:
         Apply list (bullet/numbered/alphabet) properties and handle list restart logic.
         """
         styles_config = self.selected_style_guide["styles"]
-        numbering_part = doc.part.numbering_part
+        try:
+            numbering_part = doc.part.numbering_part
+        except (NotImplementedError, KeyError, AttributeError):
+            numbering_part = None
         if numbering_part is None:
             # If document has no numbering part, some formatting might fail,
             # but we can try to continue or skip.
@@ -1446,7 +1455,10 @@ class AdvancedFormatter:
                 run.font.color.rgb = RGBColor(0, 0, 0)
 
     def _ensure_numbering_part(self, doc):
-        return doc.part.numbering_part
+        try:
+            return doc.part.numbering_part
+        except (NotImplementedError, KeyError, AttributeError):
+            return None
     
     def _apply_heading_styles(self, doc):
             """Apply heading styles based on the style guide."""
