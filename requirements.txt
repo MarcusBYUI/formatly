@@ -3,3 +3,4 @@ python-docx
 python-dotenv
 pyspellchecker
 language-tool-python
+Gunicorn
